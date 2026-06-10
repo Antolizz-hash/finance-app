@@ -174,7 +174,7 @@ ul li a{
     justify-content: center;
     width: 400px;
 }
-.amount,.category-number{
+.expense-container .amount,.category-number{
     color: blue;
     font-weight: bold;
     font-size: 25px;
