@@ -323,3 +323,25 @@ form button{
     width: 100%;
 
 }
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: hsla(225, 53%, 94%, 0.74);
+    margin-bottom: 20px;
+}
+.nav-links{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    
+
+}
+.nav-links a{
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    font-size: 18px;
+}
