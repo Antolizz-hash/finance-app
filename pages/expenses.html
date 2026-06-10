@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <title>Expenses</title>
+
+</head>
+<body>
+    <div class="expense-container">
+        <h1>Expense Tracker</h1>
+        <div class="filter">
+            <div class="from">
+
+                <label for="from-date">From:</label>
+                <input type="date">
+            </div>
+            <div class="to">
+                <label for="to-date">To:</label>
+                <input type="date">
+            </div>
+        </div>
+        
+        <p>Track your expenses with ease</p>
+        <div class="overview">
+            <div class="upper-card shadow">
+                <p>Total Expenses</p>
+                <p class="amount">ksh. 2000</p>
+                <p class="period">Last 30 days</p>
+            </div>
+            <div class="upper-card shadow">
+                <p>Daily Average </p>
+                <p class="amount">ksh. 2000</p>
+                <p class="period">Based on 30 days</p>
+            </div>
+            <div class="upper-card" shadow>
+                <p>Category</p>
+                <p class="category-number">7</p>
+                <p>Different types</p>
+            </div>
+        </div>
+
+        <div class="main-cards">
+            <div class="add-expense shadow">
+                <h1>Add Expense</h1>
+                <form action="">
+                    <label for="description">Description</label>
+                    <input type="text" name="description">
+                    <div class="middle">
+                        <div class="expense-amount">
+                            <label for="expense-amount">Amount(ksh)</label>
+                            <input type="text" name>
+                        </div>
+
+                        <div class="expense-date">
+                            <label for="expense-date">Date</label>
+                            <input type="date" name="expense-date" id="expense-date">
+                        </div>
+                    </div>
+
+                    <label for="category">Category</label>
+                    <select name="category" id="category">
+                        <option value="food">Food</option>
+                        <option value="family">Family</option>
+                        <option value="gas">Gas</option>
+                        <option value="loan">Loan</option>
+                        <option value="data">Data</option>
+                        <option value="Kinyozi">Kinyozi</option>
+                    </select>
+                    <button type="submit">Add Expense</button>
+                </form>
+            </div>
+            <div class="preview shadow">
+                <h1>Expense Overview</h1>
+                <div class="expense-content">
+
+
+                    <div class="left">
+    
+                        <div class="pie-chart">
+        
+                        </div>
+                        <div class="overview-buttons">
+                            <button>Pie</button>
+                            <button>Bar</button>
+                            <button>Trend</button>
+                        </div>
+                    </div>
+    
+                    <div class="right">
+                        <div class="categories">
+                            <div class="cat orange"></div>
+                            Food
+                        </div>
+                        <div class="categories">
+                            <div class="cat yellow"></div>
+                            Family</div>
+                        <div class="categories">
+                            <div class="cat purple"></div>
+                            Data</div>
+                        <div class="categories">
+                            <div class="cat pink"></div>
+                            Gas</div>
+                        <div class="categories">
+                            <div class="cat red"></div>
+                            Loan</div>
+                        <div class="categories">
+                            <div class="cat green" ></div>
+                            Kinyozi tools</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="result">
+            <h2>Your transactions</h2>
+        </div>
+        
+    </div>
+</body>
+</html>

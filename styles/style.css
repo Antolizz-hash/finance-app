@@ -21,9 +21,11 @@
 .header{
     display:grid;
     grid-template-columns: 100px 1fr 1fr 1fr;
+    grid-template-rows: 80px;
     align-items: center;
+    justify-content: center;
     gap: 20px;
-    padding:20px;
+    padding:10px;
     margin-bottom: 120px;
     background-color: hsla(225, 86%, 72%, 0.74);
 
@@ -32,8 +34,8 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    width:100px;
-    height:100px;
+    width:70px;
+    height:70px;
     border-radius: 50%;
     background-color: hsla(120, 94%, 49%, 0.808);
     margin-bottom: 20px;
@@ -89,20 +91,235 @@ ul li a{
     
 }
 .content .cards{
-    background-color: hsla(240, 1%, 30%, 0.74);
+    background-color: hsla(240, 7%, 86%, 0.74);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    color: white;
+    color: black;
     height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+.loans{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+}
+.loans .loan-amount{
+    color: red;
+    font-weight: bold;
+}
 .goal{
     display: flex;
-    gap: 5px;
+    /* gap: 5px; */
     padding: 10px;
+   
+}
+.amount{
+    display: flex;
+    flex-direction: column;
+    /* gap: 5px; */
+    padding: 10px;
+    /* margin-bottom: 20px; */
+    align-items: center;
+    justify-content: center;
 }
 
+
+
+/* start of expenses page css */
+
+.expense-container{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 20px;
+  align-items: center;
+  background-color: hsla(240, 20%, 94%, 0.74);
+  padding: 20px;
+
+}
+.expense-container .shadow{
+    /* background-color: hsla(240, 11%, 96%, 0.74); */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: black;
+    /* height: 250px; */
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; */
+}
+.overview{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    padding: 10px;
+    
+}
+.upper-card{
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    color: black;
+    height: 250px;
+    display: flex;
+    height: 100px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+}
+.amount,.category-number{
+    color: blue;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.main-cards{
+    width: 1200px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* border: 1px solid; */
+}
+.add-expense{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    padding: 20px;
+    /* border: 1px solid red; */
+}
+form{ 
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    font-size: 16px;
+    /* padding: 10px; */
+    padding: 22px 0;
+    
+}
+.middle{
+    display: flex;
+    gap: 10px;
+}
+.expense-date,.expense-amount{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    
+}
+input,select{
+    font-size: 20px;
+}
+form button{
+    font-size: 18px;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: hsl(240, 75%, 38%);
+    color: white;
+    border: none;
+}
+.preview{
+    /* border: 1px solid green; */
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+
+}
+.left{
+    width: 60%;
+    /* border: 2px solid blue; */
+}
+.right{
+    width: 40%;
+    /* border: 2px solid yellow; */
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    margin-top: 50px;
+    margin-left: 50px;
+}
+.pie-chart{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(
+        yellow 0% 25%,
+        pink 25% 85%,
+        orange 85%
+    );
+    /* border: 1px solid; */
+}
+.categories{
+    display: flex;
+    padding: 5px;
+    gap: 10px;
+}
+.cat{
+    width: 50px;
+    border: 1px solid;
+}
+.orange{
+    background-color: orange;
+}
+.purple{
+    background-color: purple;
+}
+.red{
+    background-color: red;
+}
+.green{
+    background-color: green;
+}
+.yellow{
+    background-color: yellow;
+}
+.pink{
+    background-color: pink;
+}
+.overview-buttons{
+    display: flex;
+    align-items: end;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.overview-buttons button{
+    width: 70px;
+    /* padding: 10px; */
+    font-size: 18px;
+}
+.expense-content{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.overview-buttons button:active{
+    background-color: blue;
+}
+
+.filter{
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 20px;
+}
+.filter input{
+    width: 140px;
+}
+.expense-container h1{
+    color: blue;
+}
+.result{
+    width: 100%;
+
+}
