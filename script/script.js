@@ -72,11 +72,14 @@ async function loadLoans() {
 async function loadUsers() {
     const usersSnap = await getDoc(doc(db, "Users", "users"));
     if (usersSnap.exists()) {
-        username.textContent = `Welcome ${usersSnap.data().username}`;
-        user.textContent = `Hello ${usersSnap.data().username}`;
+        username.textContent = `Welcome ${usersSnap.data().firstName}`;
+        user.textContent = `Hello ${usersSnap.data().firstName}`;
     }
     
 }
+
+// saving data to db
+
 
 loadUsers();
 loadLoans();
