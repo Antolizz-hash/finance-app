@@ -16,7 +16,7 @@
         <ul class="nav-links">
             <li><a href="../index.html">Dashboard</a></li>
             <li><a href="">Savings</a></li>
-            <li><a href="">Loans</a></li>
+            <li><a href="./loans.html">Loans</a></li>
             <li><a href="">Income</a></li>
             <li><a href="">Goals</a></li>
             <li><a href="">Reports</a></li>
@@ -42,7 +42,7 @@
         <div class="overview">
             <div class="upper-card shadow">
                 <p>Total Expenses</p>
-                <p class="amount">ksh. 2000</p>
+                <p class="expense-amount-display" id="total-expenses">ksh. 2000</p>
                 <p class="period">Last 30 days</p>
             </div>
             <div class="upper-card shadow">
@@ -62,11 +62,11 @@
                 <h1>Add Expense</h1>
                 <form action="">
                     <label for="description">Description</label>
-                    <input type="text" name="description">
+                    <input type="text" name="description" class="description">
                     <div class="middle">
                         <div class="expense-amount">
                             <label for="expense-amount">Amount(ksh)</label>
-                            <input type="text" name="e">
+                            <input type="text" name="expense-amount" id="expense-amount">
                         </div>
 
                         <div class="expense-date">
@@ -83,8 +83,14 @@
                         <option value="loan">Loan</option>
                         <option value="data">Data</option>
                         <option value="Kinyozi">Kinyozi</option>
+                        <option value="gotv">Go tv</option>
+                        <option value="wifi">WiFi</option>
+                        <option value="loan">Loan</option>
+                        <option value="betting">Betting</option>
+                        <option value="other">Other</option>
+    
                     </select>
-                    <button type="submit">Add Expense</button>
+                    <button type="submit" id="submitBtn">Add Expense</button>
                 </form>
             </div>
             <div class="preview shadow">

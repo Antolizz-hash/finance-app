@@ -4,11 +4,14 @@
     padding: 0;
     font-family: Arial, sans-serif;
 }
+body{
+    background-color: hsla(229, 51%, 92%, 0.74);
+}
 
 .grid-container{
     display: grid;
     grid-template-columns: 200px 1fr;
-    background-color: hsla(229, 51%, 92%, 0.74);
+    
 }
 
 .sidebar{
@@ -35,7 +38,7 @@
     justify-content: center;
     gap: 20px;
     padding:10px;
-    margin-bottom: 120px;
+    /* margin-bottom: 120px; */
     background-color: hsla(225, 86%, 72%, 0.74);
 
 }
@@ -136,6 +139,27 @@ ul li a{
     align-items: center;
     justify-content: center;
 }
+.content .Loans{
+    background-color: red;
+    color: white;
+}
+.content .savings{
+    background-color: green;
+    color: white
+}
+.content .expenses{
+    background-color: orange;
+    color: white;
+}
+.content .goals{
+    background-color: blue;
+    color: white
+}
+.content .income{
+    background-color: purple;
+    color: white;
+}
+
 
 
 
@@ -205,7 +229,7 @@ ul li a{
     padding: 20px;
     /* border: 1px solid red; */
 }
-form{ 
+.add-expense form{ 
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -223,13 +247,13 @@ form{
     width: 50%;
     
 }
-input,select{
+.add-expense input,select{
     font-size: 20px;
 }
-form label{
+.add-expense form label{
     padding: 10px;
 }
-form button{
+.add-expense form button{
     font-size: 18px;
     padding: 10px;
     margin-top: 10px;
@@ -359,4 +383,145 @@ form button{
     color: black;
     font-size: 16px;
     font-size: 18px;
+}
+
+/* end of expense styles */
+
+/* start of loan styles */
+.loan-container{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+    /* justify-content: center; */
+}
+.loan-overview{
+    display: flex;
+    gap: 20px;
+}
+.loan-cards{
+    width: 400px;
+    height: 150px;
+    border-radius: 10px;
+    border: 1px solid;
+    font-size: 20px;
+    padding: 10px;
+    
+}
+.total-loans{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(75, 75, 245);
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+.total-balance{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(66, 19, 233);
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+.upcoming-payment{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(19, 183, 233);
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+.add-loan{
+    display: flex;
+    justify-content: space-between;
+    width: 1240px;
+}
+
+
+.loan-display{
+    width: 1240px;
+    display: flex;
+    flex-direction: column;
+    /* gap: 10px; */
+}
+.loan-display table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.loan-display th,
+.loan-display td {
+    padding: 12px;
+    border: none;
+    text-align: left;
+}
+.loan-display th {
+    background-color: rgb(66, 19, 233);
+    color: white;
+    
+}
+thead th:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+thead th:last-child {
+    border-radius: 0 10px 0 0;
+}
+.add-loan-form{
+    /* width: 40%; */
+    /* border: 1px solid; */
+    padding: 20px;
+    /* background-color: rgba(43, 128, 128, 0.63); */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+}
+
+.add-loan-form form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* padding: 20px; */
+}
+.add-loan-form form .middle{
+    display: flex;
+    gap: 10px;
+}
+.add-loan-form form label{
+    padding: 10px;
+}
+.add-loan-form form button{
+    width: 100%;
+    background-color: #e0033b;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 10px;
+}
+.loan-amount{
+    display: flex;
+    flex-direction: column;
+}
+.loan-due-date{
+    display: flex;
+    flex-direction: column;
+}
+.add-loan-form input,select{
+    width: 100%;
+    padding: 5px 0;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(237, 244, 248, 0.863);
+
+}
+.search-loan input{
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    
 }

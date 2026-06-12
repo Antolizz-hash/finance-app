@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loans</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <script type="module" src="../script/script.js"></script>
+</head>
+<body>
+
+    <div class = "nav">
+        <div class="logo">
+            <img src="../images/velocity logo.png" alt="logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Dashboard</a></li>
+            <li><a href="">Savings</a></li>
+            <li><a href="./expenses.html">Expenses</a></li>
+            <li><a href="">Income</a></li>
+            <li><a href="">Goals</a></li>
+            <li><a href="">Reports</a></li>
+        </ul>
+    </div>
+    <div class="loan-container">
+        <h1>Loan Manager</h1>
+        <div class="loan-overview">
+            <div class="loan-cards total-loans">
+                <p>Total Loans</p>
+                <p class="loan-number">2</p>
+
+            </div>
+            <div class="loan-cards total-balance">
+                <p>Total Balance</p>
+                <p class="balance">40000</p>
+            </div>
+            <div class="loan-cards upcoming-payment">
+                <p>Upcoming payment</p>
+                <p class="payment-amount">980</p>
+            </div>
+        </div>    
+        <div class="add-loan">
+            <div class="add-loan-form">
+                <form action="">
+                    <caption><h2>Pay loan</h2></caption>
+                    <label for="loanName">Choose Loan</label>
+                    <select name="loanName" id="loanName">
+                        <option value="">Choose loan</option>
+                        <option value="bridge">Bridge</option>
+                        <option value="fuliza">Fuliza</option>
+                    </select>
+                    <div class="middle">
+                        <div class="loan-amount">
+
+                            <label for="loanAmount">Amount</label>
+                            <input type="text" name="loanAmount" id="loanAmount">
+                        </div>
+                            <div class="loan-due-date">
+                                <label for="paymentDate">Payment Date</label>
+                                <input type="date" name="paymentDate" id="paymentDate">
+                            </div>
+                    </div>
+                    
+                    <label for="interest">Interest Rate</label>
+                    <input type="text" name="interest" id="interest">
+                    <button>Pay Loan</button>
+                </form>
+            </div>
+
+            <div class="add-loan-form">
+                <form action="">
+                    <caption><h2>Add a loan</h2></caption>
+                    <label for="loanName">Loan Name</label>
+                    <input type="text" name="loaName" id="loanName">
+                    <div class="middle">
+                        <div class="loan-amount">
+
+                            <label for="loanAmount">Amount</label>
+                            <input type="text" name="loanAmount" id="loanAmount">
+                        </div>
+                            <div class="loan-due-date">
+                                <label for="dueDate">Due Date</label>
+                                <input type="date" name="dueDate" id="dueDate">
+                            </div>
+                    </div>
+                    
+                    <label for="interest">Interest Rate</label>
+                    <input type="text" name="interest" id="interest">
+                    <button>Add Loan</button>
+                </form>
+            </div>
+
+            <div class="search-loan">
+
+                <input type="text" name="search-loan" placeholder="search loan">
+            </div>
+        </div>
+        <div class="loan-display">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Loan Name</th>
+                        <th> Original Amount</th>
+                        <th>Remaining Balance</th>
+                        <th>Interest rate</th>
+                    </tr>
+                    
+                </thead>
+                <tbody> 
+                    <tr>
+                        <td>Bridge Loan</td>
+                        <td>4080</td>
+                        <td>3930</td>
+                        <td>8%</td>
+                    </tr>
+                    <tr>   
+                        <td>Fuliza Loan</td>
+                        <td>800</td>
+                        <td>785</td>
+                        <td>10%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</body>
+</html>

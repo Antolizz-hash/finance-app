@@ -6,6 +6,8 @@
   getDocs,
   getFirestore,
   doc,
+  addDoc,
+  setDoc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -83,3 +85,62 @@ async function loadUsers() {
 
 loadUsers();
 loadLoans();
+
+// ********************************** expenses page script *****************************************************
+
+const addExpenseBtn = document.getElementById('submitBtn');
+addExpenseBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const description = document.querySelector('.description').value;
+    const amount = document.querySelector('#expense-amount').value;
+    const date = document.getElementById('expense-date').value;
+    const category = document.getElementById('category').value;
+
+    console.log({ description, amount, date, category });
+
+    try {
+        await addDoc(collection(db, "Expenses"), {
+        description,
+        amount,
+        date,
+        category
+    });
+
+        alert("Expense added successfully!");
+        document.querySelector('.description').value = '';
+        document.querySelector('#expense-amount').value = '';
+        document.getElementById('expense-date').value = '';
+        document.getElementById('category').value = '';
+    } catch (error) {
+        console.error("Error adding expense:", error);
+        alert("Failed to add expense. Please try again.");
+    }
+});
+
+//retrieving expenses from db and displaying them in the preview section
+async function loadTotalExpenses() {
+    let total = 0;
+
+    const querySnapshot = await getDocs(collection(db, "Expenses"));
+
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+
+        total += Number(data.amount) || 0;
+    });
+
+    const totalExpenses = document.getElementById("total-expenses");
+    totalExpenses.textContent = `Ksh ${total.toLocaleString()}`;
+
+    totalExpenses.style.fontSize = "24px";
+     totalExpenses.style.color = "blue";
+     totalExpenses.style.fontWeight = "bold";
+     totalExpenses.style.padding = "10px";
+
+
+    // document.getElementById("total-expenses").textContent =
+    //     `Ksh ${total.toLocaleString()}`;
+}
+
+loadTotalExpenses();
