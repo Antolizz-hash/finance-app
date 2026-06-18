@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script type="module" src="../script/income.js"></script>
+    <script src="../script/incomeUi.js" defer></script>
+    <title>Income</title>
+</head>
+<body>
+    <div class="income-container">
+    <nav>
+       
+        <ul class="nav-links">
+            <li><a href="../index.html">Dashboard</a></li>
+            <li><a href="./accounts.html">Accounts</a></li>
+            <li><a href="./expenses.html">Expenses</a></li>
+            <li><a href="./loans.html">Loans</a></li>
+            <li><a href="">Goals</a></li>
+            <li><a href="">Reports</a></li>
+        </ul>
+    </nav>
+    <div class="search">
+
+        <div class="search-transaction">
+            <input type="text" name="search-income" placeholder="search income...">
+            <button type="submit" class="search-btn">
+                <img src="../icons/search.png" alt="search icon">
+            </button>
+        </div>
+    </div>
+
+    <h1>Income</h1>
+    <div class="income-overview">
+        <div class="income-card monthly-income shadow">
+            <h2>Monthly Income</h2>
+            <p class="monthly-income-amount income-display">Ksh. 0</p>
+        </div>
+        <div class="income-card daily-income shadow">
+            <h2>Today's Income</h2>
+            <p class="daily-income-amount income-display">Ksh. 0</p>
+
+        </div>
+        <div class="income-card expense-display shadow">
+            <h2>Total Expense</h2>
+            <p class="expense-amount-display income-display">Ksh. 0</p>
+
+        </div>
+    </div>
+
+    <section class="form-section">
+        <button id="addIncomeModalBtn">Add Income</button>
+        <div id="addIncomeModal" class="modal-overlay">
+
+            <div class="add-income-form">
+                <span class="close-modal-btn" id="closeAddIncomeModalBtn">&times;</span>
+                
+                <form action="">
+                    <h3>Add Income</h3>
+                    <p class="message-display"></p>
+                    <div class="payment-method">
+                        <div class="cash-income">
+                            <label for="cash-amount">Cash Amount</label>
+                            <input type="text" name="cash-amount" id="cash-amount">
+                        </div>
+                        <div class="mpesa-income">
+                            <label for="mpesa-amount">Mpesa Amount</label>
+                            <input type="text" name="mpesa-amount" id="mpesa-amount">
+                        </div>
+                    </div>
+                    <label for="">Date</label>
+                    <input type="date" name="income-date" id="income-date">
+
+                    <button id="add-income-btn">Add Income</button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="display-income">
+        <div class="income-preview">
+            <h3>Your Transactions</h3>
+        </div>
+        <div class="chart-display">
+
+        </div>
+    </section>
+</div>
+</body>
+</html>

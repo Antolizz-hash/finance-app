@@ -5,42 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loans</title>
     <link rel="stylesheet" href="../styles/style.css">
-    <script type="module" src="../script/script.js"></script>
+    <script src="../script/ui.js" defer></script>
+    <script type="module" src="../script/loans.js"></script>
 </head>
 <body>
 
-    <div class = "nav">
-        <div class="logo">
-            <img src="../images/velocity logo.png" alt="logo">
-        </div>
-        <ul class="nav-links">
-            <li><a href="../index.html">Dashboard</a></li>
-            <li><a href="">Savings</a></li>
-            <li><a href="./expenses.html">Expenses</a></li>
-            <li><a href="">Income</a></li>
-            <li><a href="">Goals</a></li>
-            <li><a href="">Reports</a></li>
-        </ul>
-    </div>
+    
+    
+    
     <div class="loan-container">
+        <nav>
+           
+            <ul class="nav-links">
+                <li><a href="../index.html">Dashboard</a></li>
+                <li><a href="./accounts.html">Accounts</a></li>
+                <li><a href="./expenses.html">Expenses</a></li>
+                <li><a href="./income.html">Income</a></li>
+                <li><a href="">Goals</a></li>
+                <li><a href="">Reports</a></li>
+            </ul>
+        </nav>
+        <div class="search">
+    
+            <div class="search-transaction">
+                <input type="text" name="search-transaction" placeholder="search loan...">
+                <button type="submit" class="search-btn">
+                    <img src="../icons/search.png" alt="search icon">
+                </button>
+            </div>
+        </div>
         <h1>Loan Manager</h1>
         <div class="loan-overview">
             <div class="loan-cards total-loans">
-                <p>Total Loans</p>
-                <p class="loan-number">2</p>
+                <p>Number of Loans</p>
+                <p id="loan-number">0</p>
 
             </div>
             <div class="loan-cards total-balance">
                 <p>Total Balance</p>
-                <p class="balance">40000</p>
+                <p id="loan-balance">Ksh. 0</p>
             </div>
             <div class="loan-cards upcoming-payment">
                 <p>Upcoming payment</p>
-                <p class="payment-amount">980</p>
+                <p class="payment-amount">Ksh. 0</p>
             </div>
         </div>    
-        <div class="add-loan">
-            <div class="add-loan-form">
+
+        <div class="loan-actions">
+
+            
+        <button id="openPayModalBtn">Pay Loan</button>
+
+        <!-- The Pop-up Overlay Container Wrapper -->
+        <div id="payLoanModal" class="modal-overlay">
+            
+            
+            <div class="add-loan-form pay-loan-form">
+                
+                <span class="close-modal-btn" id="closePayModalBtn">&times;</span>
+
                 <form action="">
                     <caption><h2>Pay loan</h2></caption>
                     <label for="loanName">Choose Loan</label>
@@ -50,51 +73,66 @@
                         <option value="fuliza">Fuliza</option>
                     </select>
                     <div class="middle">
-                        <div class="loan-amount">
-
-                            <label for="loanAmount">Amount</label>
-                            <input type="text" name="loanAmount" id="loanAmount">
+                        <div class="loan-amount payment-amount">
+                            <label for="paymentAmount">Amount</label>
+                            <input type="text" name="paymentAmount" id="paymentAmount">
                         </div>
-                            <div class="loan-due-date">
-                                <label for="paymentDate">Payment Date</label>
-                                <input type="date" name="paymentDate" id="paymentDate">
-                            </div>
+                        <div class="loan-due-date">
+                            <label for="paymentDate">Payment Date</label>
+                            <input type="date" name="paymentDate" id="paymentDate">
+                        </div>
                     </div>
                     
-                    <label for="interest">Interest Rate</label>
-                    <input type="text" name="interest" id="interest">
-                    <button>Pay Loan</button>
+                    <label for="paymentAccount">Choose Account</label>
+                    <select name="paymentAccount" id="paymentAccount">
+                        <option value="Mpesa">Mpesa</option>
+                        <option value="savings">Savings</option>
+                    </select>
+                    <button id="payLoanButton">Pay Loan</button>
                 </form>
             </div>
+            
 
-            <div class="add-loan-form">
-                <form action="">
-                    <caption><h2>Add a loan</h2></caption>
-                    <label for="loanName">Loan Name</label>
-                    <input type="text" name="loaName" id="loanName">
-                    <div class="middle">
-                        <div class="loan-amount">
+        </div>
 
-                            <label for="loanAmount">Amount</label>
-                            <input type="text" name="loanAmount" id="loanAmount">
-                        </div>
+        
+        <button id="openAddModalBtn">Add Loan</button>
+
+        
+        <div id="addLoanModal" class="modal-overlay">
+
+            <div class="add-loan">
+                <div class="add-loan-form">
+                
+                    <span class="close-modal-btn" id="closeAddModalBtn">&times;</span>
+                    
+                    <form action="">
+                        <caption><h2>Add a loan</h2></caption>
+                        <label for="loanName">Loan Name</label>
+                        <input type="text" name="loanName" id="loanName">
+                        <div class="middle">
+                            <div class="loan-amount">
+                                <label for="loanAmount">Amount</label>
+                                <input type="text" name="loanAmount" id="loanAmount">
+                            </div>
                             <div class="loan-due-date">
                                 <label for="dueDate">Due Date</label>
                                 <input type="date" name="dueDate" id="dueDate">
                             </div>
-                    </div>
-                    
-                    <label for="interest">Interest Rate</label>
-                    <input type="text" name="interest" id="interest">
-                    <button>Add Loan</button>
-                </form>
+                        </div>
+                        
+                        <label for="interest">Interest Rate</label>
+                        <input type="text" name="interest" id="interest">
+                        <button id="addLoanButton">Add Loan</button>
+                    </form>
+                </div>
             </div>
 
-            <div class="search-loan">
-
-                <input type="text" name="search-loan" placeholder="search loan">
-            </div>
         </div>
+
+        </div>
+       
+
         <div class="loan-display">
             <table>
                 <thead>

@@ -6,6 +6,8 @@
 }
 body{
     background-color: hsla(229, 51%, 92%, 0.74);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .grid-container{
@@ -32,37 +34,16 @@ body{
 }
 .header{
     display:grid;
-    grid-template-columns: 100px repeat(4,1fr);
+    grid-template-columns: repeat(4,1fr);
     grid-template-rows: 80px;
     align-items: center;
     justify-content: center;
     gap: 20px;
     padding:10px;
-    /* margin-bottom: 120px; */
-    background-color: hsla(225, 86%, 72%, 0.74);
+    background-color: hsla(225, 85%, 56%, 0.74);
 
 }
-.logo{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    width:70px;
-    height:70px;
-    border-radius: 50%;
-    background-color: hsla(120, 94%, 49%, 0.808);
-    margin-bottom: 20px;
 
-}
-.sidebar .logo{
-    width: 50px;
-    height: 50px;
-}
-.logo img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 50%;
-}
 .icon{
     display:flex;
     align-items: center;
@@ -75,19 +56,19 @@ body{
     height: 20px;
     
 }
-ul{
+.sidebar ul{
     list-style: none;
     margin-top: 50px;
 
 }
-ul li{
+.sidebar ul li{
     padding: 10px 0;
     cursor: pointer;
 }
-ul li:hover{
+.sidebar ul li:hover{
     color: hsla(229, 36%, 91%, 0.74);
 }
-ul li a{
+.sidebar ul li a{
     text-decoration: none;
     color: white;
     font-size: 16px;
@@ -121,21 +102,18 @@ ul li a{
 
 }
 .loans .loan-amount{
-    color: red;
+    color: white;
     font-weight: bold;
 }
 .goal{
     display: flex;
-    /* gap: 5px; */
     padding: 10px;
    
 }
 .amount{
     display: flex;
     flex-direction: column;
-    /* gap: 5px; */
     padding: 10px;
-    /* margin-bottom: 20px; */
     align-items: center;
     justify-content: center;
 }
@@ -173,10 +151,11 @@ ul li a{
   align-items: center;
   background-color: hsla(240, 20%, 94%, 0.74);
   padding: 20px;
+ padding-top: 80px;
+
 
 }
 .expense-container .shadow{
-    /* background-color: hsla(240, 11%, 96%, 0.74); */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -207,10 +186,11 @@ ul li a{
     justify-content: center;
     width: 400px;
 }
-.expense-container .amount,.category-number{
+.expense-container .amount,.category-number,.expense-amount-display{
     color: blue;
     font-weight: bold;
     font-size: 25px;
+    padding: 10px;
 }
 
 .main-cards{
@@ -354,6 +334,8 @@ ul li a{
 }
 .filter input{
     width: 140px;
+    padding: 10px 0 5px 0;
+    font-size: 16px;
 }
 .expense-container h1{
     color: blue;
@@ -362,29 +344,63 @@ ul li a{
     width: 100%;
 
 }
-.nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: hsla(225, 53%, 94%, 0.74);
-    margin-bottom: 20px;
+nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: hsl(225, 92%, 59%);
+    height: 70px;
+    
+    
 }
-.nav-links{
+nav .nav-links{
     display: flex;
     gap: 20px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    width: 100%;
+    list-style: none;
+    padding: 15px;
+    height: 100%;
+    /* border: 1px solid; */
     
 
 }
-.nav-links a{
+.nav-links li{
+    position: static;
+}
+nav .nav-links a{
     text-decoration: none;
-    color: black;
-    font-size: 16px;
+    color: rgb(252, 251, 251);
     font-size: 18px;
 }
+.nav-links a:hover{
+    background-color: #fff;
+    color: #000;
+}
 
+.category-account{
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+.category-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+}
+.accounts-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+    padding-top: 80px;
+
+
+}
 /* end of expense styles */
 
 /* start of loan styles */
@@ -395,6 +411,8 @@ ul li a{
     gap: 20px;
     align-items: center;
     padding: 20px;
+    padding-top: 80px;
+
     /* justify-content: center; */
 }
 .loan-overview{
@@ -434,11 +452,11 @@ ul li a{
     align-items: center;
     justify-content: center;
 }
-.add-loan{
+/* .add-loan{
     display: flex;
     justify-content: space-between;
     width: 1240px;
-}
+} */
 
 
 .loan-display{
@@ -469,20 +487,24 @@ thead th:first-child {
 thead th:last-child {
     border-radius: 0 10px 0 0;
 }
-.add-loan-form{
-    /* width: 40%; */
-    /* border: 1px solid; */
-    padding: 20px;
-    /* background-color: rgba(43, 128, 128, 0.63); */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 
+.add-loan-form {
+  position: relative;
+  background-color: #fff; 
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
+
 
 .add-loan-form form{
     width: 100%;
     display: flex;
     flex-direction: column;
     /* padding: 20px; */
+    min-height: 100%;
 }
 .add-loan-form form .middle{
     display: flex;
@@ -518,10 +540,382 @@ thead th:last-child {
     background-color: rgba(237, 244, 248, 0.863);
 
 }
-.search-loan input{
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 25px;
+.search{
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    justify-content: flex-end;
+    padding: 0 20px;
+}
+.search-transaction {
+  position: relative;
+  display: flex; 
+  width: 100%;           
+  max-width: 400px;   
+  
+  
+}
+
+#openPayModalBtn,#openAddModalBtn, .modal-btn{
+    width: 200px;
+    background-color: #e0033b;
+    color: white;
     border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+
+.search-transaction input {
+  width: 100%;
+  padding: 10px 0 5px 10px; 
+  box-sizing: border-box;
+  font-size: 16px; 
+  border-radius: 25px;
+  border: 1px solid rgb(187, 186, 186);
+}
+
+.search-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+
+.search-btn img {
+  width: 40px;
+  height: 40px;
+}
+
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 2000; 
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+
+.close-modal-btn {
+  position: absolute;
+  top: 15px; right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #777;
+  line-height: 1;
+}
+.close-modal-btn:hover { color: #000; }
+
+.loan-actions{
+    display: flex;
+    gap: 20px;
+
+}
+
+
+
+/* accounts css */
+.accounts-section {
+    padding-top: 80px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.accounts-container {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    /* border: 1px solid; */
+}
+
+.account-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.account-header h3 {
+    margin: 0;
+}
+
+.account-icon {
+    font-size: 1.5rem;
+}
+
+.account-balance {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 15px 0 5px;
+    color: white;
+}
+
+.account-label {
+    color: #f7f4f4;
+    margin: 0;
+}
+
+.cash {
+    background-color: green;
+    color: white;
+}
+
+.accounts-container .savings {
+    background-color: red;
+    color: white;
+
+}
+
+.mpesa {
+    background-color: orange;
+    color: white;
+}
+
+.forms {
+    display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.add-account-form, .add-funds-form{
+  position: relative;
+  background-color: #fff; 
+  /* padding: 30px; */
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    background-color: rgb(233, 245, 252);
+
+}
+#add-account-form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    line-height: 1.5rem;
+    padding: 20px;
+}
+#add-account-form input,select{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgba(248, 249, 250, 0.863);
+}
+#add-account-form button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    background-color: #e0033b;
+    color: white;   
+    cursor: pointer;
+}
+
+.forms{
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+
+}
+.add-funds-form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* width: 100%; */
+    line-height: 1.5rem;
+    padding: 20px;
     
+
+}
+.add-funds-form input,select{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+   background-color: rgba(237, 244, 248, 0.863);
+}
+.add-funds-form button{
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    background-color: #e0033b;
+    color: white;
+}
+
+/* ********************** income page styles************************** */
+
+.income-container{
+    width: 100vw;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+.income-container h1{
+    padding: 10px;
+}
+
+.income-overview{
+    display: flex;
+    width: 100%;
+   gap: 10px;
+    padding: 20px;
+}
+.income-card{
+   width: 35%;
+   /* border: 1px solid;  */
+   height: 200px;
+   display: flex;
+   flex-direction: column;
+   padding: 20px;
+   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+   border-radius: 15px;
+   background-color: hsl(0, 0%, 93%);
+   align-items: center;
+   justify-content: center;
+}
+.income-display{
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: blue;
+}
+
+.form-section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-income-form{
+   /* box-shadow: 0 4px 8px rgba(0,0,0,0.1); */
+   position: relative;
+   width: 100%;
+   max-width: 600px;
+
+}
+
+.add-income-form form{
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    width: 100%;
+    background-color: #f7f4f4;
+   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+   line-height: 1.5em;
+   border-radius: 10px;
+    
+}
+
+.payment-method{
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+
+.cash-income{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.mpesa-income{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.add-income-form label{
+    padding: 10px 0 0 0;
+}
+
+.add-income-form button{
+    margin: 20px 0 20px 0;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    background-color: #e0033b;
+    color: white;
+}
+
+.add-income-form input{
+    padding: 10px 0 0 10px;
+}
+
+#addIncomeModalBtn{
+    margin: 20px 0 20px 0;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 10px;
+    border: none;
+    background-color: #e0033b;
+    color: white;
+    margin-left: 20px;
+    width: 200px;
+
+}
+
+.display-income{
+    width: 100vw;
+    padding: 20px;
+    display:flex;
+    gap:20px
+}
+.income-preview{
+    width: 50%;
+    min-height: 20em;
+   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: hsla(240, 11%, 96%, 0.74);
+   border-radius: 15px;
+   padding: 20px;
+   display: flex;
+   flex-direction: column;
+
+
+}
+.chart-display{
+    width: 50%;
+    min-height: 20em;
+   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: hsla(240, 11%, 96%, 0.74);
+   border-radius: 15px;
+   padding: 20px;
+}
+
+.message-display{
+    width: 100%;
+    font-size: 22px;
+    padding: 20px;
+    color: green;
+    font-weight: bold;
+;
+
 }
