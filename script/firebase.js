@@ -6,11 +6,13 @@
   import {
   collection,
   getDocs,
-  getFirestore,
   doc,
   addDoc,
   setDoc,
   runTransaction,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  initializeFirestore,
   getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -32,4 +34,9 @@
   // Initialize Firebase
   export const app = initializeApp(firebaseConfig);
   export const analytics = getAnalytics(app);
-  export const db = getFirestore(app);
+  // Initialize Firestore with local caching enabled
+  export const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager() 
+    })
+  });
