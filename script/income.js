@@ -1,17 +1,16 @@
 //import firbase.js
 import {db} from './firebase.js'
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
 import {
 collection,
 getDocs,
-getFirestore,
 doc,
 addDoc,
 setDoc,
 runTransaction,
-getDoc,
-Timestamp
+persistentLocalCache,
+persistentMultipleTabManager,
+initializeFirestore,
+getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const addIncomeBtn = document.getElementById('add-income-btn');
@@ -154,9 +153,9 @@ const loadBalance = async () => {
     const totalBalance = accountsCashBalance + accountsMpesaBalance;
 
     monthlyIncomeDisplay.textContent = `Ksh. ${totalBalance}`
-    incomeDisplay.textContent = `Ksh. ${totalBalance}`
 
-    console.log(totalBalance);
+
+
 
 
 }

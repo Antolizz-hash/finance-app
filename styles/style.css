@@ -89,11 +89,14 @@ body{
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     color: black;
-    height: 250px;
+    height: 350px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+.content .cards p{
+    padding: 10px;
 }
 .loans{
     display: flex;

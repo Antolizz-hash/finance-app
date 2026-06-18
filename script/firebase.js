@@ -33,10 +33,11 @@
 
   // Initialize Firebase
   export const app = initializeApp(firebaseConfig);
-  export const analytics = getAnalytics(app);
+  // export const analytics = getAnalytics(app);
   // Initialize Firestore with local caching enabled
-  export const db = initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      tabManager: persistentMultipleTabManager() 
-    })
+  export const db = initializeFirestore(app, 
+  {localCache: 
+    persistentLocalCache(/*settings*/{tabManager: persistentMultipleTabManager()})
   });
+
+console.log("Firestore initialized");
