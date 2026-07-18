@@ -6,7 +6,7 @@
     <title>Loans</title>
     <link rel="stylesheet" href="../styles/style.css">
     <script src="../script/ui.js" defer></script>
-    <script type="module" src="../script/loans.js"></script>
+    <script type="module" src="../script/loans.js" defer></script>
 </head>
 <body>
 
@@ -87,6 +87,7 @@
                     <select name="paymentAccount" id="paymentAccount">
                         <option value="Mpesa">Mpesa</option>
                         <option value="savings">Savings</option>
+                        <option value="fuliza">Fuliza</option>
                     </select>
                     <button id="payLoanButton">Pay Loan</button>
                 </form>
@@ -108,18 +109,36 @@
                     
                     <form action="">
                         <caption><h2>Add a loan</h2></caption>
-                        <label for="loanName">Loan Name</label>
-                        <input type="text" name="loanName" id="loanName">
+                        <label for="addLoanName">Loan Name</label>
+                        <input type="text" name="loanName" id="addLoanName">
                         <div class="middle">
                             <div class="loan-amount">
                                 <label for="loanAmount">Amount</label>
                                 <input type="text" name="loanAmount" id="loanAmount">
                             </div>
+                           
                             <div class="loan-due-date">
                                 <label for="dueDate">Due Date</label>
                                 <input type="date" name="dueDate" id="dueDate">
                             </div>
                         </div>
+                        <div class="loan-limit">
+                            <label for="loanLimit">Loan Limit</label>
+                            <input type="text" name="loanLimit" id="loanLimit">
+                        </div>
+                        <div class="loan-balance">
+                                <label for="loanBalance">Remaining Balance</label>
+                                <input type="text" name="loanBalance" id="loanBalance">
+                        </div>
+                        <div class="loan-due-date">
+                            <label for="dateTaken">Date Taken</label>
+                            <input type="date" name="dateTaken" id="dateTaken">
+                        </div>
+                        <div class="loan-due-date">
+                            <label for="lastInterestDate">Last Interest Date</label>
+                            <input type="date" name="lastInterestDate" id="lastInterestDate">
+                        </div>
+
                         
                         <label for="interest">Interest Rate</label>
                         <input type="text" name="interest" id="interest">
@@ -133,7 +152,7 @@
         </div>
        
 
-        <div class="loan-display">
+        <!-- <div class="loan-display">
             <table>
                 <thead>
                     <tr>
@@ -159,8 +178,8 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div>-->
         
-    </div>
+    </div> 
 </body>
 </html>

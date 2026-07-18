@@ -57,7 +57,7 @@
                     <h2 class="username">John Doe</h2>
                 </div>
                 <div class="profile-pic">
-                    <img src="./images/profile picture.png" alt="profile picture">
+                    <!-- <img src="./images/profile picture.png" alt="profile picture"> -->
                 </div>
             </div>
             <div class="content">
@@ -67,17 +67,17 @@
                 </div>
                 <div class="expenses cards">
                     <h2>Expenses</h2>
-                    <p>ksh. 5,000</p>
+                    <p id="expenses-display">ksh. 0</p>
                 </div>
                 <div class="Loans cards">
                     <h2>Loans</h2>
                     <div class="loans">
-                        <div class="amount">
+                        <div class="loans-amount">
                             <h4>Fuliza</h4>
                             <p class="loan-amount fuliza-amount">KES 0</p>
                             <p class="fuliza-due-date"></p>
                         </div>
-                        <div class="amount">
+                        <div class="loans-amount">
                             <h4>Bridge Loan</h4>
                             <p class="loan-amount bridge-amount">KES 0</p>
                             <p class="bridge-due-date"></p>
@@ -90,12 +90,12 @@
                 </div>
                 <div class="goals cards">
                     <h2>Goals</h2>
-                    <div class="goal">
-                        <span>Target:</span>
+                    <div class="goal target">
+                        <p>Target:</p>
                         <p class="target-amount">ksh. 20,000</p>
                     </div>
-                    <div class="goal">
-                        <span>Remaining:</span>
+                    <div class="goal remaining">
+                        <p>Remaining:</p>
                         <p class="remaining-amount">ksh. 2,000</p>
                     </div>
                     <div class="progress-bar"></div>
@@ -105,9 +105,6 @@
         </div>
 
     </div>
-
-
-
 
 <script>
   if ('serviceWorker' in navigator) {

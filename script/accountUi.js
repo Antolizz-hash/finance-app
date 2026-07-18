@@ -1,49 +1,37 @@
-const modalOverlay = document.getElementById('payLoanModal');
-const openModalBtn = document.querySelector('.modal-btn')
-const addFundsBtn = document.getElementById('openPayModalBtn');
-const closeModalBtn = document.getElementById('closePayModalBtn');
+// Add Account modal controls
+const addAccountModal = document.getElementById('addAccountModal');
+const openAddAccountModalBtn = document.getElementById('openAddAccountModalBtn');
+const closeAddAccountModalBtn = document.getElementById('closeAddAccountModalBtn');
 
-// Open pop-up wrapper
-openModalBtn.addEventListener('click', () => {
-  modalOverlay.style.display = 'flex';
+openAddAccountModalBtn?.addEventListener('click', () => {
+  addAccountModal.style.display = 'flex';
 });
 
-// Open pop-up wrapper
-addFundsBtn.addEventListener('click', () => {
-  modalOverlay.style.display = 'flex';
+closeAddAccountModalBtn?.addEventListener('click', () => {
+  addAccountModal.style.display = 'none';
 });
 
-
-// Close pop-up wrapper using 'X'
-closeModalBtn.addEventListener('click', () => {
-  modalOverlay.style.display = 'none';
-});
-
-// Close pop-up window if clicking anywhere outside the form box boundary
 window.addEventListener('click', (event) => {
-  if (event.target === modalOverlay) {
-    modalOverlay.style.display = 'none';
+  if (event.target === addAccountModal) {
+    addAccountModal.style.display = 'none';
   }
 });
 
-// Target elements for the Add Loan modal
-const addLoanModal = document.getElementById('addLoanModal');
-const openAddModalBtn = document.getElementById('openAddModalBtn');
-const closeAddModalBtn = document.getElementById('closeAddModalBtn');
+// Add Funds modal controls
+const addFundsModal = document.getElementById('addFundsModal');
+const addFundsBtn = document.getElementById('openPayModalBtn');
+const closeAddFundsModalBtn = document.getElementById('closeAddFundsModalBtn');
 
-// Open the Add Loan pop-up
-openAddModalBtn.addEventListener('click', () => {
-  addLoanModal.style.display = 'flex';
+addFundsBtn?.addEventListener('click', () => {
+  addFundsModal.style.display = 'flex';
 });
 
-// Close the Add Loan pop-up using 'X'
-closeAddModalBtn.addEventListener('click', () => {
-  addLoanModal.style.display = 'none';
+closeAddFundsModalBtn?.addEventListener('click', () => {
+  addFundsModal.style.display = 'none';
 });
 
-// Close the Add Loan pop-up if clicking outside the white box boundary
 window.addEventListener('click', (event) => {
-  if (event.target === addLoanModal) {
-    addLoanModal.style.display = 'none';
+  if (event.target === addFundsModal) {
+    addFundsModal.style.display = 'none';
   }
 });
