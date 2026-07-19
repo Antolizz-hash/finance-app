@@ -16,6 +16,8 @@ body{
     
 }
 
+
+
 .sidebar{
     background-color: hsla(236, 90%, 45%, 0.74);
     width: 200px;
@@ -34,7 +36,7 @@ body{
 }
 .header{
     display:grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(5,1fr);
     grid-template-rows: 80px;
     align-items: center;
     justify-content: center;
@@ -43,6 +45,11 @@ body{
     background-color: hsla(225, 85%, 56%, 0.74);
 
 }
+.phone-menu{
+    display:none;
+    
+}
+
 
 .icon{
     display:flex;
@@ -944,4 +951,56 @@ thead th:last-child {
     font-weight: bold;
 ;
 
+}
+/* --- MOBILE STYLES (Under 768px) --- */
+@media (max-width: 768px) {
+    .grid-container {
+        display: block; /* Switch layout from grid to block if needed */
+    }
+
+    .sidebar {
+        display: none; /* Hide the desktop sidebar completely on mobile */
+    }
+
+    .phone-menu {
+        display: block; /* Show the container on mobile */
+        position: relative;
+    }
+
+    .menu-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: block;
+        width: 30px;
+    }
+
+    .menu-toggle img {
+        width: 100%;
+        display: block;
+    }
+
+    /* Hide menu links by default on mobile */
+    .nav-links {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 200px;
+        z-index: 100;
+        list-style: none;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    /* This class is injected by JS to reveal the menu items */
+    .nav-links.is-active {
+        display: flex;
+    }
 }

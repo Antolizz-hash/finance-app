@@ -208,3 +208,16 @@ onSnapshot(collection(db, "Expenses"), (querySnapshot) => {
 }, (error) => {
     console.error("Failed to load expenses:", error);
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toogle");
+    const navLinks = document.getElementById("nav-links");
+
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener("click", () => {
+            // Toggles the .is-active class to show/hide the menu
+            navLinks.classList.toggle("is-active");
+        });
+    }
+});

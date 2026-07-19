@@ -153,6 +153,7 @@ depositButton.addEventListener('click', async (e) =>{
     e.preventDefault();
 
     const deposit = getDepositValues();
+    const display = document.querySelector('.display-result');
 
 
     
@@ -195,17 +196,24 @@ depositButton.addEventListener('click', async (e) =>{
             // });
             transaction.set(transactionRef, {
                 transactionType: "deposit",
-                amount: parseFloat(deposit.depositAmount),
+                amount: Number(deposit.depositAmount),
                 account: "cash",
                 date: toTimestamp(deposit.date)
             }); 
-            alert("Transaction recorded successfully");
-            console.log("Transaction recorded successfully");
+            display.style.color = 'green';
+            display.textContent = "Transaction recorded successfully"
+            // alert("Transaction recorded successfully");
+            // console.log("Transaction recorded successfully");
             clearDepositValues();
+            // display.textContent = ''
                 
             } catch (error) {
+                display.style.color = 'red';
+                display.textContent = 'deposit failed: '+ error;
+                
                 console.log('deposit failed: '+error);
                 clearDepositValues(); 
+                display.textContent = ''
             }
             
             
