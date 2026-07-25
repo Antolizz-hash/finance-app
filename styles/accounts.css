@@ -1,0 +1,446 @@
+/* ===== CSS Reset & Variables ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #64748b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ===== Navigation ===== */
+nav {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+/* ===== Accounts Section ===== */
+.accounts-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    display: grid;
+    gap: 2.5rem;
+}
+
+.accounts-section > h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+}
+
+/* ===== Accounts Container (CSS Grid) ===== */
+.accounts-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+/* ===== Account Cards ===== */
+.account-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.account-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.account-card.cash::before {
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.account-card.mpesa::before {
+    background: linear-gradient(90deg, #2563eb, #60a5fa);
+}
+
+.account-card.savings::before {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.account-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.account-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.account-icon {
+    font-size: 2rem;
+}
+
+.account-balance {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.account-label {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ===== Forms / Buttons Section ===== */
+.forms {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 0.875rem 2.5rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#openAddAccountModalBtn {
+    background: var(--primary);
+    color: white;
+}
+
+#openAddAccountModalBtn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+#openPayModalBtn {
+    background: var(--success);
+    color: white;
+}
+
+#openPayModalBtn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+/* ===== Modal Forms ===== */
+.add-account-form,
+.add-funds-form {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    font-size: 1.75rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.close-modal-btn:hover {
+    color: var(--danger);
+    transform: scale(1.1);
+}
+
+.add-account-form h3,
+.add-funds-form h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.add-account-form label,
+.add-funds-form label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.add-account-form input,
+.add-account-form select,
+.add-funds-form input,
+.add-funds-form select {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    transition: var(--transition);
+}
+
+.add-account-form input:focus,
+.add-account-form select:focus,
+.add-funds-form input:focus,
+.add-funds-form select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+#add-account-btn,
+#deposit-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+}
+
+#add-account-btn {
+    background: var(--primary);
+    color: white;
+}
+
+#add-account-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+#deposit-btn {
+    background: var(--success);
+    color: white;
+}
+
+#deposit-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet: 768px - 1024px */
+@media (max-width: 1024px) {
+    .accounts-container {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .account-card {
+        padding: 1.5rem;
+    }
+
+    .account-balance {
+        font-size: 1.75rem;
+    }
+}
+
+/* Mobile Large: 600px - 768px */
+@media (max-width: 768px) {
+    .accounts-section {
+        padding: 2rem 1.5rem;
+    }
+
+    .accounts-container {
+        grid-template-columns: 1fr;
+    }
+
+    .account-card {
+        padding: 1.75rem;
+    }
+
+    .forms {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .modal-btn {
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+/* Mobile Small: below 600px */
+@media (max-width: 600px) {
+    .accounts-section {
+        padding: 1.5rem 1rem;
+        gap: 2rem;
+    }
+
+    .accounts-section > h2 {
+        font-size: 1.75rem;
+    }
+
+    .account-card {
+        padding: 1.5rem;
+    }
+
+    .account-balance {
+        font-size: 1.5rem;
+    }
+
+    .account-icon {
+        font-size: 1.75rem;
+    }
+
+    .forms {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-btn {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .add-account-form,
+    .add-funds-form {
+        padding: 1.75rem;
+        max-width: 100%;
+    }
+
+    .add-account-form h3,
+    .add-funds-form h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 380px) {
+    .accounts-section > h2 {
+        font-size: 1.5rem;
+    }
+
+    .account-balance {
+        font-size: 1.35rem;
+    }
+
+    .nav-links a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+}

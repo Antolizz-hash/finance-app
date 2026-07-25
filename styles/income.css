@@ -1,0 +1,512 @@
+/* ===== CSS Reset & Variables ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #64748b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --bg: #f1f5f9;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ===== Income Container ===== */
+.income-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 2.5rem;
+    display: grid;
+    gap: 2rem;
+}
+
+/* ===== Navigation ===== */
+nav {
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.08);
+}
+
+/* ===== Search Bar ===== */
+.search {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.search-transaction {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    width: 100%;
+    max-width: 500px;
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.search-transaction input {
+    padding: 0.875rem 1.25rem;
+    border: none;
+    font-size: 1rem;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+}
+
+.search-transaction input::placeholder {
+    color: var(--text-light);
+}
+
+.search-btn {
+    padding: 0.75rem 1.25rem;
+    background: var(--primary);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn:hover {
+    background: var(--primary-dark);
+}
+
+.search-btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+}
+
+/* ===== Page Title ===== */
+.income-container > h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+}
+
+/* ===== Income Overview Cards (CSS Grid) ===== */
+.income-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.income-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.income-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.income-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.monthly-income::before {
+    background: linear-gradient(90deg, var(--primary), #60a5fa);
+}
+
+.daily-income::before {
+    background: linear-gradient(90deg, var(--success), #34d399);
+}
+
+.expense-display::before {
+    background: linear-gradient(90deg, var(--danger), #f87171);
+}
+
+.income-card h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.income-display {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.shadow {
+    box-shadow: var(--shadow);
+}
+
+/* ===== Form Section ===== */
+.form-section {
+    display: flex;
+    justify-content: center;
+}
+
+#addIncomeModalBtn {
+    padding: 0.875rem 2.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+#addIncomeModalBtn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Modal Overlay ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.add-income-form {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    font-size: 1.75rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.close-modal-btn:hover {
+    color: var(--danger);
+    transform: scale(1.1);
+}
+
+.add-income-form h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+}
+
+.message-display {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    min-height: 1.25rem;
+}
+
+.add-income-form label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.add-income-form input {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    transition: var(--transition);
+}
+
+.add-income-form input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.payment-method {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+#add-income-btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 0.5rem;
+}
+
+#add-income-btn:hover {
+    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Display Income Section ===== */
+.display-income {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+}
+
+.income-preview,
+.chart-display {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    min-height: 300px;
+}
+
+.income-preview h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.75rem;
+}
+
+.chart-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--card-bg) 0%, #f8fafc 100%);
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet: 768px - 1024px */
+@media (max-width: 1024px) {
+    .income-overview {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .income-card {
+        padding: 1.5rem;
+    }
+
+    .income-display {
+        font-size: 1.75rem;
+    }
+
+    .display-income {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+/* Mobile Large: 600px - 768px */
+@media (max-width: 768px) {
+    .income-container {
+        padding: 0 1.5rem 2rem;
+    }
+
+    nav {
+        margin: 0 -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .income-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .income-card {
+        padding: 1.75rem;
+    }
+
+    .display-income {
+        grid-template-columns: 1fr;
+    }
+
+    .income-preview,
+    .chart-display {
+        min-height: 200px;
+    }
+}
+
+/* Mobile Small: below 600px */
+@media (max-width: 600px) {
+    .income-container {
+        padding: 0 1rem 1.5rem;
+        gap: 1.5rem;
+    }
+
+    nav {
+        margin: 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .income-container > h1 {
+        font-size: 1.75rem;
+    }
+
+    .income-card {
+        padding: 1.5rem;
+    }
+
+    .income-display {
+        font-size: 1.5rem;
+    }
+
+    .payment-method {
+        grid-template-columns: 1fr;
+    }
+
+    .add-income-form {
+        padding: 1.75rem;
+        max-width: 100%;
+    }
+
+    .add-income-form h3 {
+        font-size: 1.25rem;
+    }
+
+    .income-preview,
+    .chart-display {
+        padding: 1.5rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 380px) {
+    .income-container > h1 {
+        font-size: 1.5rem;
+    }
+
+    .income-display {
+        font-size: 1.35rem;
+    }
+
+    .nav-links a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    #addIncomeModalBtn {
+        width: 100%;
+        padding: 1rem;
+    }
+}

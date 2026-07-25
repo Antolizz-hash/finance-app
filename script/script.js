@@ -215,9 +215,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const navLinks = document.getElementById("nav-links");
 
     if (menuToggle && navLinks) {
-        menuToggle.addEventListener("click", () => {
-            // Toggles the .is-active class to show/hide the menu
-            navLinks.classList.toggle("is-active");
+        // Toggle on hamburger click
+        menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle("active");
+        });
+
+        // Close when clicking a link
+        navLinks.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", () => {
+                navLinks.classList.remove("active");
+            });
+        });
+
+        // Close when clicking outside
+        document.addEventListener("click", (e) => {
+            if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                navLinks.classList.remove("active");
+            }
         });
     }
 });
