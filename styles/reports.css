@@ -807,3 +807,82 @@ nav::-webkit-scrollbar {
         height: 80px;
     }
 }
+
+
+/* ===== Loading & Empty States ===== */
+.loading-text,
+.no-results,
+.error-text {
+    text-align: center;
+    color: var(--text-light);
+    padding: 3rem 0;
+    font-size: 1rem;
+}
+
+.error-text {
+    color: var(--danger);
+}
+
+/* ===== Print Styles (for PDF/Print export) ===== */
+@media print {
+    nav,
+    .report-filters,
+    .export-actions {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+    }
+
+    .reports-container {
+        padding: 0;
+        max-width: 100%;
+    }
+
+    .summary-card,
+    .chart-card,
+    .breakdown-card,
+    .insights-banner {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .charts-section {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .breakdown-section {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ===== Chart Animations ===== */
+.donut-ring {
+    animation: scaleIn 0.5s ease;
+}
+
+.bar {
+    animation: growUp 0.6s ease forwards;
+    transform-origin: bottom;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes growUp {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+}
+
+.progress-fill {
+    animation: fillBar 0.8s ease forwards;
+    width: 0;
+}
+
+@keyframes fillBar {
+    to { width: var(--target-width, 0); }
+}

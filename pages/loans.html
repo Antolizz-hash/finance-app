@@ -9,13 +9,8 @@
     <script type="module" src="../script/loans.js" defer></script>
 </head>
 <body>
-
-    
-    
-    
     <div class="loan-container">
         <nav>
-           
             <ul class="nav-links">
                 <li><a href="../index.html">Dashboard</a></li>
                 <li><a href="./accounts.html">Accounts</a></li>
@@ -25,8 +20,8 @@
                 <li><a href="./reports.html">Reports</a></li>
             </ul>
         </nav>
+
         <div class="search">
-    
             <div class="search-transaction">
                 <input type="text" name="search-transaction" placeholder="search loan...">
                 <button type="submit" class="search-btn">
@@ -34,152 +29,162 @@
                 </button>
             </div>
         </div>
+
         <h1>Loan Manager</h1>
+
         <div class="loan-overview">
             <div class="loan-cards total-loans">
-                <p>Number of Loans</p>
+                <p>Active Loans</p>
                 <p id="loan-number">0</p>
-
             </div>
             <div class="loan-cards total-balance">
                 <p>Total Balance</p>
                 <p id="loan-balance">Ksh. 0</p>
             </div>
             <div class="loan-cards upcoming-payment">
-                <p>Upcoming payment</p>
-                <p class="payment-amount">Ksh. 0</p>
+                <p>Upcoming Payment</p>
+                <p class="payment-amount" id="upcoming-payment">Ksh. 0</p>
             </div>
-        </div>    
-
-        <div class="loan-actions">
-
-            
-        <button id="openPayModalBtn">Pay Loan</button>
-
-        <!-- The Pop-up Overlay Container Wrapper -->
-        <div id="payLoanModal" class="modal-overlay">
-            
-            
-            <div class="add-loan-form pay-loan-form">
-                
-                <span class="close-modal-btn" id="closePayModalBtn">&times;</span>
-
-                <form action="">
-                    <caption><h2>Pay loan</h2></caption>
-                    <label for="loanName">Choose Loan</label>
-                    <select name="loanName" id="loanName">
-                        <option value="">Choose loan</option>
-                        <option value="bridge">Bridge</option>
-                        <option value="fuliza">Fuliza</option>
-                    </select>
-                    <div class="middle">
-                        <div class="loan-amount payment-amount">
-                            <label for="paymentAmount">Amount</label>
-                            <input type="text" name="paymentAmount" id="paymentAmount">
-                        </div>
-                        <div class="loan-due-date">
-                            <label for="paymentDate">Payment Date</label>
-                            <input type="date" name="paymentDate" id="paymentDate">
-                        </div>
-                    </div>
-                    
-                    <label for="paymentAccount">Choose Account</label>
-                    <select name="paymentAccount" id="paymentAccount">
-                        <option value="Mpesa">Mpesa</option>
-                        <option value="savings">Savings</option>
-                        <option value="fuliza">Fuliza</option>
-                    </select>
-                    <button id="payLoanButton">Pay Loan</button>
-                </form>
-            </div>
-            
-
         </div>
 
-        
-        <button id="openAddModalBtn">Add Loan</button>
+        <div class="loan-actions">
+            <button id="openPayModalBtn">Pay Loan</button>
 
-        
-        <div id="addLoanModal" class="modal-overlay">
+            <!-- Pay Loan Modal -->
+            <div id="payLoanModal" class="modal-overlay">
+                <div class="add-loan-form pay-loan-form">
+                    <span class="close-modal-btn" id="closePayModalBtn">&times;</span>
+                    <form id="pay-loan-form">
+                        <h2>Pay Loan</h2>
+                        <label for="loanName">Choose Loan</label>
+                        <select name="loanName" id="loanName">
+                            <option value="">Choose loan</option>
+                            <option value="Bridge">Bridge</option>
+                            <option value="Fuliza">Fuliza</option>
+                        </select>
 
-            <div class="add-loan">
-                <div class="add-loan-form">
-                
-                    <span class="close-modal-btn" id="closeAddModalBtn">&times;</span>
-                    
-                    <form action="">
-                        <caption><h2>Add a loan</h2></caption>
-                        <label for="addLoanName">Loan Name</label>
-                        <input type="text" name="loanName" id="addLoanName">
                         <div class="middle">
-                            <div class="loan-amount">
-                                <label for="loanAmount">Amount</label>
-                                <input type="text" name="loanAmount" id="loanAmount">
+                            <div class="loan-amount payment-amount">
+                                <label for="paymentAmount">Amount (Ksh)</label>
+                                <input type="number" name="paymentAmount" id="paymentAmount" min="1" step="0.01" required>
                             </div>
-                           
                             <div class="loan-due-date">
-                                <label for="dueDate">Due Date</label>
-                                <input type="date" name="dueDate" id="dueDate">
+                                <label for="paymentDate">Payment Date</label>
+                                <input type="date" name="paymentDate" id="paymentDate">
                             </div>
-                        </div>
-                        <div class="loan-limit">
-                            <label for="loanLimit">Loan Limit</label>
-                            <input type="text" name="loanLimit" id="loanLimit">
-                        </div>
-                        <div class="loan-balance">
-                                <label for="loanBalance">Remaining Balance</label>
-                                <input type="text" name="loanBalance" id="loanBalance">
-                        </div>
-                        <div class="loan-due-date">
-                            <label for="dateTaken">Date Taken</label>
-                            <input type="date" name="dateTaken" id="dateTaken">
-                        </div>
-                        <div class="loan-due-date">
-                            <label for="lastInterestDate">Last Interest Date</label>
-                            <input type="date" name="lastInterestDate" id="lastInterestDate">
                         </div>
 
-                        
-                        <label for="interest">Interest Rate</label>
-                        <input type="text" name="interest" id="interest">
-                        <button id="addLoanButton">Add Loan</button>
+                        <label for="paymentAccount">Choose Account</label>
+                        <select name="paymentAccount" id="paymentAccount">
+                            <option value="mpesa">M-Pesa</option>
+                            <option value="savings">Savings</option>
+                            <option value="fuliza">Fuliza</option>
+                        </select>
+
+                        <p class="payment-info" id="payment-info"></p>
+                        <button type="submit" id="payLoanButton">Pay Loan</button>
                     </form>
                 </div>
             </div>
 
+            <button id="openAddModalBtn">Add Loan</button>
+
+            <!-- Add Loan Modal -->
+            <div id="addLoanModal" class="modal-overlay">
+                <div class="add-loan">
+                    <div class="add-loan-form">
+                        <span class="close-modal-btn" id="closeAddModalBtn">&times;</span>
+                        <form id="add-loan-form">
+                            <h2>Add a Loan</h2>
+
+                            <label for="addLoanName">Loan Name</label>
+                            <select name="loanName" id="addLoanName">
+                                <option value="">Select loan type</option>
+                                <option value="Bridge">Bridge Loan</option>
+                                <option value="Fuliza">Fuliza Overdraft</option>
+                            </select>
+
+                            <!-- Bridge fields -->
+                            <div id="bridge-fields" style="display:none;">
+                                <div class="middle">
+                                    <div class="loan-amount">
+                                        <label for="bridgeLoanAmount">Principal Amount (Ksh)</label>
+                                        <input type="number" name="loanAmount" id="bridgeLoanAmount" min="0" step="0.01">
+                                    </div>
+                                    <div class="loan-due-date">
+                                        <label for="bridgeDueDate">Due Date</label>
+                                        <input type="date" name="dueDate" id="bridgeDueDate">
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <div class="loan-balance">
+                                        <label for="bridgeLoanBalance">Current Balance (Ksh)</label>
+                                        <input type="number" name="loanBalance" id="bridgeLoanBalance" min="0" step="0.01">
+                                    </div>
+                                    <div class="loan-due-date">
+                                        <label for="bridgeDateTaken">Date Taken</label>
+                                        <input type="date" name="dateTaken" id="bridgeDateTaken">
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <div class="loan-due-date">
+                                        <label for="bridgeLastInterestDate">Last Interest Date</label>
+                                        <input type="date" name="lastInterestDate" id="bridgeLastInterestDate">
+                                    </div>
+                                    <div class="loan-limit">
+                                        <label for="bridgeInterestRate">Daily Interest (Ksh)</label>
+                                        <input type="number" name="interestRate" id="bridgeInterestRate" min="0" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fuliza fields -->
+                            <div id="fuliza-fields" style="display:none;">
+                                <div class="middle">
+                                    <div class="loan-limit">
+                                        <label for="fulizaLoanLimit">Fuliza Limit (Ksh)</label>
+                                        <input type="number" name="loanLimit" id="fulizaLoanLimit" min="0" step="0.01">
+                                    </div>
+                                    <div class="loan-amount">
+                                        <label for="fulizaLoanAmount">Current Owed (Ksh)</label>
+                                        <input type="number" name="loanAmount" id="fulizaLoanAmount" min="0" step="0.01" value="0">
+                                    </div>
+                                </div>
+                                <div class="middle">
+                                    <div class="loan-due-date">
+                                        <label for="fulizaDateTaken">Date Taken</label>
+                                        <input type="date" name="dateTaken" id="fulizaDateTaken">
+                                    </div>
+                                    <div class="loan-due-date">
+                                        <label for="fulizaLastInterestDate">Last Charge Date</label>
+                                        <input type="date" name="lastInterestDate" id="fulizaLastInterestDate">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="addLoanButton">Add Loan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        </div>
-       
-
-        <!-- <div class="loan-display">
+        <div class="loan-display" id="loan-display">
             <table>
                 <thead>
                     <tr>
                         <th>Loan Name</th>
-                        <th> Original Amount</th>
+                        <th>Limit / Principal</th>
                         <th>Remaining Balance</th>
-                        <th>Interest rate</th>
+                        <th>Available</th>
+                        <th>Due Date</th>
                     </tr>
-                    
                 </thead>
-                <tbody> 
-                    <tr>
-                        <td>Bridge Loan</td>
-                        <td>4080</td>
-                        <td>3930</td>
-                        <td>8%</td>
-                    </tr>
-                    <tr>   
-                        <td>Fuliza Loan</td>
-                        <td>800</td>
-                        <td>785</td>
-                        <td>10%</td>
-                    </tr>
+                <tbody id="loan-table-body">
+                    <tr><td colspan="5" style="text-align:center;color:#64748b;padding:2rem">No loans found</td></tr>
                 </tbody>
             </table>
-        </div>-->
-        
-    </div> 
+        </div>
+    </div>
 </body>
 </html>

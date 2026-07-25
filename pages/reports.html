@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reports</title>
     <link rel="stylesheet" href="../styles/reports.css">
-    <script type="module" src="../script/reports.js" defer></script>
+    <script type="module" src="../script/reports.js"></script>
 </head>
 <body>
     <div class="reports-container">
@@ -16,8 +16,8 @@
                 <li><a href="./expenses.html">Expenses</a></li>
                 <li><a href="./income.html">Income</a></li>
                 <li><a href="./loans.html">Loans</a></li>
-                <li><a href="./goals.html">Goals</a></li>
-                
+                <li><a href="">Goals</a></li>
+                <li><a href="">Reports</a></li>
             </ul>
         </nav>
 
@@ -84,85 +84,15 @@
             <div class="chart-card">
                 <h2>Spending by Category</h2>
                 <div class="chart-placeholder donut-chart" id="category-chart">
-                    <!-- JS chart library will render here -->
-                    <div class="chart-mock">
-                        <div class="donut-ring">
-                            <div class="donut-hole">
-                                <span class="donut-total">Ksh. 24,500</span>
-                                <span class="donut-label">Total Spent</span>
-                            </div>
-                        </div>
-                    </div>
+                    <p style="text-align:center;color:var(--text-light);padding:3rem 0">Loading...</p>
                 </div>
-                <div class="chart-legend" id="category-legend">
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background:#f97316"></span>
-                        <span class="legend-name">Food</span>
-                        <span class="legend-value">35%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background:#ef4444"></span>
-                        <span class="legend-name">Loan</span>
-                        <span class="legend-value">25%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background:#a855f7"></span>
-                        <span class="legend-name">Data</span>
-                        <span class="legend-value">15%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background:#eab308"></span>
-                        <span class="legend-name">Family</span>
-                        <span class="legend-value">12%</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background:#22c55e"></span>
-                        <span class="legend-name">Other</span>
-                        <span class="legend-value">13%</span>
-                    </div>
-                </div>
+                <div class="chart-legend" id="category-legend"></div>
             </div>
 
             <div class="chart-card wide">
                 <h2>Income vs Expenses Trend</h2>
                 <div class="chart-placeholder bar-chart" id="trend-chart">
-                    <!-- JS chart library will render here -->
-                    <div class="chart-mock bars">
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:60%"></div>
-                            <div class="bar expense-bar" style="height:40%"></div>
-                            <span class="bar-label">Jan</span>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:75%"></div>
-                            <div class="bar expense-bar" style="height:55%"></div>
-                            <span class="bar-label">Feb</span>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:50%"></div>
-                            <div class="bar expense-bar" style="height:70%"></div>
-                            <span class="bar-label">Mar</span>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:80%"></div>
-                            <div class="bar expense-bar" style="height:45%"></div>
-                            <span class="bar-label">Apr</span>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:65%"></div>
-                            <div class="bar expense-bar" style="height:50%"></div>
-                            <span class="bar-label">May</span>
-                        </div>
-                        <div class="bar-group">
-                            <div class="bar income-bar" style="height:90%"></div>
-                            <div class="bar expense-bar" style="height:60%"></div>
-                            <span class="bar-label">Jun</span>
-                        </div>
-                    </div>
-                    <div class="chart-legend-inline">
-                        <span><span class="legend-dot" style="background:#10b981"></span> Income</span>
-                        <span><span class="legend-dot" style="background:#ef4444"></span> Expenses</span>
-                    </div>
+                    <p style="text-align:center;color:var(--text-light);padding:3rem 0">Loading...</p>
                 </div>
             </div>
         </div>
@@ -172,102 +102,14 @@
             <div class="breakdown-card">
                 <h2>Top Spending Categories</h2>
                 <div class="category-list" id="top-categories">
-                    <div class="category-row">
-                        <div class="category-info">
-                            <span class="category-icon">🍽️</span>
-                            <div>
-                                <p class="category-name">Food</p>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width:35%;background:#f97316"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="category-total">Ksh. 8,575</span>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-info">
-                            <span class="category-icon">💸</span>
-                            <div>
-                                <p class="category-name">Loan Repayment</p>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width:25%;background:#ef4444"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="category-total">Ksh. 6,125</span>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-info">
-                            <span class="category-icon">📱</span>
-                            <div>
-                                <p class="category-name">Data & Airtime</p>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width:15%;background:#a855f7"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="category-total">Ksh. 3,675</span>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-info">
-                            <span class="category-icon">👨‍👩‍👧</span>
-                            <div>
-                                <p class="category-name">Family</p>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width:12%;background:#eab308"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="category-total">Ksh. 2,940</span>
-                    </div>
-                    <div class="category-row">
-                        <div class="category-info">
-                            <span class="category-icon">⛽</span>
-                            <div>
-                                <p class="category-name">Gas</p>
-                                <div class="progress-track">
-                                    <div class="progress-fill" style="width:8%;background:#22c55e"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="category-total">Ksh. 1,960</span>
-                    </div>
+                    <p style="text-align:center;color:var(--text-light);padding:1rem">Loading...</p>
                 </div>
             </div>
 
             <div class="breakdown-card">
                 <h2>Account Activity</h2>
                 <div class="account-summary" id="account-summary">
-                    <div class="account-row">
-                        <div class="account-info">
-                            <span class="account-icon">💵</span>
-                            <span class="account-name">Cash</span>
-                        </div>
-                        <div class="account-flows">
-                            <span class="flow-in">+Ksh. 5,000</span>
-                            <span class="flow-out">-Ksh. 3,200</span>
-                        </div>
-                    </div>
-                    <div class="account-row">
-                        <div class="account-info">
-                            <span class="account-icon">📱</span>
-                            <span class="account-name">M-Pesa</span>
-                        </div>
-                        <div class="account-flows">
-                            <span class="flow-in">+Ksh. 12,000</span>
-                            <span class="flow-out">-Ksh. 8,500</span>
-                        </div>
-                    </div>
-                    <div class="account-row">
-                        <div class="account-info">
-                            <span class="account-icon">🏦</span>
-                            <span class="account-name">Savings</span>
-                        </div>
-                        <div class="account-flows">
-                            <span class="flow-in">+Ksh. 3,000</span>
-                            <span class="flow-out">-Ksh. 0</span>
-                        </div>
-                    </div>
+                    <p style="text-align:center;color:var(--text-light);padding:1rem">Loading...</p>
                 </div>
             </div>
         </div>
@@ -277,7 +119,7 @@
             <div class="insight-icon">💡</div>
             <div class="insight-content">
                 <h3>Insight</h3>
-                <p id="insight-text">Your highest spending category this month is <strong>Food</strong> at 35% of total expenses. Consider setting a budget limit to stay on track.</p>
+                <p id="insight-text">Generate a report to see insights.</p>
             </div>
         </div>
 

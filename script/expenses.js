@@ -191,29 +191,37 @@ onSnapshot(collection(db, "Expenses"), (querySnapshot) => {
 const searchBtn = document.getElementById("search-expense");
 
 searchBtn.addEventListener("click", async () => {
-
     const displayDiv = document.getElementById("result-div");
-
-    // Get the selected dates
     const startDate = document.getElementById("from-date").value;
     const endDate = document.getElementById("to-date").value;
 
-    // Validate input
+    // Validate inputs
     if (!startDate || !endDate) {
         alert("Please select both dates.");
         return;
     }
 
-    // Beginning of the start date
     const start = new Date(startDate);
     start.setHours(0, 0, 0, 0);
 
-    // End of the end date
     const end = new Date(endDate);
     end.setHours(23, 59, 59, 999);
 
-    try {
+    // Check if start is after end
+    if (start > end) {
+        alert("Start date cannot be after end date.");
+        return;
+    }
 
+    // Show loading state
+    displayDiv.innerHTML = `
+        <h2>Your Transactions</h2>
+        <p class="loading-text">Loading expenses...</p>
+    `;
+    searchBtn.disabled = true;
+    searchBtn.textContent = "Searching...";
+
+    try {
         const expensesQuery = query(
             collection(db, "Transactions"),
             where("transactionType", "==", "expense"),
@@ -224,33 +232,75 @@ searchBtn.addEventListener("click", async () => {
 
         const snapshot = await getDocs(expensesQuery);
 
-        // Clear previous results
-        displayDiv.innerHTML = "<h2>Your Transactions</h2>";
+        // Clear and prepare container
+        let html = `<h2>Your Transactions</h2>`;
 
         if (snapshot.empty) {
-            displayDiv.innerHTML += "<p>No expenses found for the selected dates.</p>";
+            html += `<p class="no-results">No expenses found for the selected dates.</p>`;
+            displayDiv.innerHTML = html;
             return;
         }
 
+        let totalAmount = 0;
+        const transactions = [];
+
         snapshot.forEach((doc) => {
-
             const expense = doc.data();
+            const amount = Number(expense.amount) || 0;
+            totalAmount += amount;
 
-            displayDiv.innerHTML += `
-                <div class="transaction">
-                    <h3>${expense.category}</h3>
-                    <p><strong>Amount:</strong> Ksh ${Number(expense.amount).toFixed(2)}</p>
-                    <p><strong>Account:</strong> ${expense.account}</p>
-                    <p><strong>Date:</strong> ${expense.date.toDate().toLocaleDateString("en-KE")}</p>
-                    <hr>
+            // Handle date - supports both Firestore Timestamp and string
+            let dateStr = "N/A";
+            if (expense.date) {
+                if (typeof expense.date.toDate === "function") {
+                    dateStr = expense.date.toDate().toLocaleDateString("en-KE");
+                } else if (expense.date instanceof Date) {
+                    dateStr = expense.date.toLocaleDateString("en-KE");
+                } else {
+                    dateStr = new Date(expense.date).toLocaleDateString("en-KE");
+                }
+            }
+
+            transactions.push(`
+                <div class="transaction-card">
+                    <div class="transaction-header">
+                        <span class="transaction-category">${expense.category || "Uncategorized"}</span>
+                        <span class="transaction-amount">Ksh ${amount.toFixed(2)}</span>
+                    </div>
+                    ${expense.description ? `<p class="transaction-desc">${expense.description}</p>` : ""}
+                    <div class="transaction-footer">
+                        <span class="transaction-account">${expense.account || "N/A"}</span>
+                        <span class="transaction-date">${dateStr}</span>
+                    </div>
                 </div>
-            `;
-
+            `);
         });
+
+        // Add summary header
+        html += `
+            <div class="transaction-summary">
+                <span>${snapshot.size} transaction${snapshot.size !== 1 ? "s" : ""}</span>
+                <span>Total: <strong>Ksh ${totalAmount.toFixed(2)}</strong></span>
+            </div>
+        `;
+
+        html += transactions.join("");
+        displayDiv.innerHTML = html;
 
     } catch (error) {
         console.error("Search failed:", error);
-        alert("Failed to retrieve expenses.");
+        displayDiv.innerHTML = `
+            <h2>Your Transactions</h2>
+            <p class="error-text">Failed to retrieve expenses. Please try again.</p>
+        `;
+        
+        // Common Firestore index error
+        if (error.message && error.message.includes("index")) {
+            alert("This query requires a Firestore index. Check the browser console for the index creation link.");
+        }
+    } finally {
+        // Reset button state
+        searchBtn.disabled = false;
+        searchBtn.textContent = "Search";
     }
-
 });

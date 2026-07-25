@@ -395,6 +395,85 @@ nav::-webkit-scrollbar {
     box-shadow: var(--shadow);
 }
 
+.loading-text,
+.no-results,
+.error-text {
+    text-align: center;
+    color: var(--text-light);
+    padding: 2rem;
+    font-size: 1rem;
+}
+
+.error-text {
+    color: var(--danger);
+}
+
+.transaction-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.transaction-summary strong {
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+.transaction-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.transaction-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateX(4px);
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.transaction-category {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text);
+    text-transform: capitalize;
+}
+
+.transaction-amount {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--danger);
+}
+
+.transaction-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+}
+
+.transaction-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 
 /* Tablet: 768px - 1024px */
