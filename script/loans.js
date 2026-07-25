@@ -417,28 +417,59 @@ async function payFuliza(amount, fromAccount, paymentDate) {
     alert("Fuliza repayment successful!");
 }
 
-// ===== BRIDGE INTEREST CALCULATION =====
+// ===== SAFER BRIDGE INTEREST CALCULATION =====
 async function calculateBridgeInterest(bridgeData) {
     const principal = Number(bridgeData.loanAmount) || 0;
-    const dateTaken = bridgeData.dateTaken;
-    const dueDate = bridgeData.dueDate;
-    const lastInterestDate = bridgeData.lastInterestDate;
-    const dailyInterest = Number(bridgeData.interestRate) || 0;
     const loanBalance = Number(bridgeData.loanBalance) || 0;
+    const dailyInterest = Number(bridgeData.interestRate) || 0;
 
-    if (loanBalance <= 0 || dailyInterest <= 0) return loanBalance;
+    if (loanBalance <= 0 || dailyInterest <= 0) {
+        console.log("Bridge: No interest to calculate (balance or rate is 0)");
+        return loanBalance;
+    }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const lastInterestDate = bridgeData.lastInterestDate;
+    if (!lastInterestDate) {
+        console.log("Bridge: No lastInterestDate set, skipping.");
+        return loanBalance;
+    }
 
-    const lastDate = lastInterestDate?.toDate ? lastInterestDate.toDate() : new Date(lastInterestDate || Date.now());
-    lastDate.setHours(0, 0, 0, 0);
+    // Parse lastInterestDate safely
+    let lastDate;
+    if (lastInterestDate.toDate) {
+        lastDate = lastInterestDate.toDate();
+    } else if (lastInterestDate.seconds) {
+        lastDate = new Date(lastInterestDate.seconds * 1000);
+    } else {
+        lastDate = new Date(lastInterestDate);
+    }
 
-    const daysPassed = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
-    if (daysPassed <= 0) return loanBalance;
+    // CRITICAL: Work in UTC to avoid timezone shifts
+    const lastYear = lastDate.getFullYear();
+    const lastMonth = lastDate.getMonth();
+    const lastDay = lastDate.getDate();
+
+    const now = new Date();
+    const todayYear = now.getFullYear();
+    const todayMonth = now.getMonth();
+    const todayDay = now.getDate();
+
+    // Calculate days difference using UTC dates
+    const lastUtc = Date.UTC(lastYear, lastMonth, lastDay);
+    const todayUtc = Date.UTC(todayYear, todayMonth, todayDay);
+    const daysPassed = Math.floor((todayUtc - lastUtc) / (1000 * 60 * 60 * 24));
+
+    console.log(`Bridge Interest Check: last=${lastYear}-${lastMonth+1}-${lastDay}, today=${todayYear}-${todayMonth+1}-${todayDay}, daysPassed=${daysPassed}`);
+
+    if (daysPassed <= 0) {
+        console.log("Bridge: No days passed, skipping interest.");
+        return loanBalance;
+    }
 
     const interestCharged = parseFloat((daysPassed * dailyInterest).toFixed(2));
     const newBalance = parseFloat((loanBalance + interestCharged).toFixed(2));
+
+    console.log(`Bridge: Charging ${daysPassed} days × ${dailyInterest} = ${interestCharged}. New balance: ${newBalance}`);
 
     const loanRef = doc(db, "Loans", "Bridge");
     try {
@@ -446,19 +477,47 @@ async function calculateBridgeInterest(bridgeData) {
             const snap = await transaction.get(loanRef);
             if (!snap.exists()) throw new Error("Bridge loan not found!");
 
-            const liveBalance = Number(snap.data().loanBalance) || 0;
+            const liveData = snap.data();
+            const liveBalance = Number(liveData.loanBalance) || 0;
+
+            // Safety: don't charge if balance already changed
             if (liveBalance !== loanBalance) {
-                console.warn("Bridge balance changed, skipping interest.");
+                console.warn(`Bridge: Balance changed (${liveBalance} vs ${loanBalance}), skipping.`);
                 return;
+            }
+
+            // Extra safety: check if lastInterestDate was already updated today
+            const liveLast = liveData.lastInterestDate;
+            let liveLastDate;
+            if (liveLast?.toDate) {
+                liveLastDate = liveLast.toDate();
+            } else if (liveLast?.seconds) {
+                liveLastDate = new Date(liveLast.seconds * 1000);
+            } else if (liveLast) {
+                liveLastDate = new Date(liveLast);
+            }
+
+            if (liveLastDate) {
+                const liveYear = liveLastDate.getFullYear();
+                const liveMonth = liveLastDate.getMonth();
+                const liveDay = liveLastDate.getDate();
+                const liveUtc = Date.UTC(liveYear, liveMonth, liveDay);
+                const liveDaysPassed = Math.floor((todayUtc - liveUtc) / (1000 * 60 * 60 * 24));
+
+                if (liveDaysPassed <= 0) {
+                    console.log("Bridge: Already updated today in another process, skipping.");
+                    return;
+                }
             }
 
             transaction.update(loanRef, {
                 loanBalance: newBalance,
-                lastInterestDate: toTimestamp(today),
+                lastInterestDate: Timestamp.fromDate(new Date(todayYear, todayMonth, todayDay, 12, 0, 0)), // noon to avoid timezone edge cases
                 totalInterestAccrued: (Number(bridgeData.totalInterestAccrued) || 0) + interestCharged
             });
+
+            console.log("Bridge: Interest applied successfully.");
         });
-        console.log(`Bridge interest: ${interestCharged}, New balance: ${newBalance}`);
     } catch (error) {
         console.error("Bridge interest update failed:", error);
     }
@@ -466,39 +525,75 @@ async function calculateBridgeInterest(bridgeData) {
     return newBalance;
 }
 
-// ===== FULIZA DAILY FEE =====
+// ===== SAFER FULIZA DAILY FEE =====
 async function chargeFulizaDailyFee(fulizaData) {
     const currentOwed = Number(fulizaData.loanAmount) || 0;
     const limit = Number(fulizaData.loanLimit) || 0;
 
     if (currentOwed <= 0 || limit <= 0) return currentOwed;
 
-    const lastCharge = fulizaData.lastInterestDate?.toDate
-        ? fulizaData.lastInterestDate.toDate()
-        : new Date(fulizaData.lastInterestDate || Date.now());
-    const firstDraw = fulizaData.dateTaken?.toDate
-        ? fulizaData.dateTaken.toDate()
-        : fulizaData.dateTaken ? new Date(fulizaData.dateTaken) : null;
+    // Parse lastInterestDate safely
+    let lastCharge;
+    const rawLast = fulizaData.lastInterestDate;
+    if (rawLast?.toDate) {
+        lastCharge = rawLast.toDate();
+    } else if (rawLast?.seconds) {
+        lastCharge = new Date(rawLast.seconds * 1000);
+    } else if (rawLast) {
+        lastCharge = new Date(rawLast);
+    } else {
+        return currentOwed;
+    }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    lastCharge.setHours(0, 0, 0, 0);
+    const lastYear = lastCharge.getFullYear();
+    const lastMonth = lastCharge.getMonth();
+    const lastDay = lastCharge.getDate();
+    const lastUtc = Date.UTC(lastYear, lastMonth, lastDay);
 
-    const daysPassed = Math.floor((today - lastCharge) / (1000 * 60 * 60 * 24));
-    if (daysPassed <= 0) return currentOwed;
+    const now = new Date();
+    const todayYear = now.getFullYear();
+    const todayMonth = now.getMonth();
+    const todayDay = now.getDate();
+    const todayUtc = Date.UTC(todayYear, todayMonth, todayDay);
+
+    const daysPassed = Math.floor((todayUtc - lastUtc) / (1000 * 60 * 60 * 24));
+
+    console.log(`Fuliza Fee Check: last=${lastYear}-${lastMonth+1}-${lastDay}, today=${todayYear}-${todayMonth+1}-${todayDay}, daysPassed=${daysPassed}`);
+
+    if (daysPassed <= 0) {
+        console.log("Fuliza: No days passed, skipping fee.");
+        return currentOwed;
+    }
 
     // Grace period
+    let firstDraw = null;
+    const rawFirst = fulizaData.dateTaken;
+    if (rawFirst?.toDate) {
+        firstDraw = rawFirst.toDate();
+    } else if (rawFirst?.seconds) {
+        firstDraw = new Date(rawFirst.seconds * 1000);
+    } else if (rawFirst) {
+        firstDraw = new Date(rawFirst);
+    }
+
     const graceDays = getGraceDays(currentOwed);
     let chargeableDays = daysPassed;
 
     if (graceDays > 0 && firstDraw) {
-        firstDraw.setHours(0, 0, 0, 0);
-        const daysSinceFirst = Math.floor((today - firstDraw) / (1000 * 60 * 60 * 24));
+        const firstYear = firstDraw.getFullYear();
+        const firstMonth = firstDraw.getMonth();
+        const firstDay = firstDraw.getDate();
+        const firstUtc = Date.UTC(firstYear, firstMonth, firstDay);
+        const daysSinceFirst = Math.floor((todayUtc - firstUtc) / (1000 * 60 * 60 * 24));
         const graceRemaining = Math.max(0, graceDays - daysSinceFirst);
         chargeableDays = Math.max(0, daysPassed - graceRemaining);
+        console.log(`Fuliza: Grace remaining=${graceRemaining}, chargeableDays=${chargeableDays}`);
     }
 
-    if (chargeableDays <= 0) return currentOwed;
+    if (chargeableDays <= 0) {
+        console.log("Fuliza: Still in grace period, no fee.");
+        return currentOwed;
+    }
 
     const dailyFee = getFulizaDailyFee(currentOwed);
     const totalFees = parseFloat((chargeableDays * dailyFee).toFixed(2));
@@ -513,19 +608,46 @@ async function chargeFulizaDailyFee(fulizaData) {
             const snap = await transaction.get(loanRef);
             if (!snap.exists()) return;
 
-            const liveOwed = Number(snap.data().loanAmount) || 0;
+            const liveData = snap.data();
+            const liveOwed = Number(liveData.loanAmount) || 0;
+
             if (liveOwed !== currentOwed) {
-                console.warn("Fuliza balance changed, skipping fee.");
+                console.warn(`Fuliza: Balance changed (${liveOwed} vs ${currentOwed}), skipping.`);
                 return;
+            }
+
+            // Extra safety: check if already updated today
+            const liveRaw = liveData.lastInterestDate;
+            let liveLast;
+            if (liveRaw?.toDate) {
+                liveLast = liveRaw.toDate();
+            } else if (liveRaw?.seconds) {
+                liveLast = new Date(liveRaw.seconds * 1000);
+            } else if (liveRaw) {
+                liveLast = new Date(liveRaw);
+            }
+
+            if (liveLast) {
+                const liveYear = liveLast.getFullYear();
+                const liveMonth = liveLast.getMonth();
+                const liveDay = liveLast.getDate();
+                const liveUtc = Date.UTC(liveYear, liveMonth, liveDay);
+                const liveDays = Math.floor((todayUtc - liveUtc) / (1000 * 60 * 60 * 24));
+                if (liveDays <= 0) {
+                    console.log("Fuliza: Already updated today, skipping.");
+                    return;
+                }
             }
 
             transaction.update(loanRef, {
                 loanAmount: newOwed,
                 availableLimit: newAvailable,
                 loanBalance: newOwed,
-                lastInterestDate: toTimestamp(today),
+                lastInterestDate: Timestamp.fromDate(new Date(todayYear, todayMonth, todayDay, 12, 0, 0)),
                 totalFeesAccrued: (Number(fulizaData.totalFeesAccrued) || 0) + totalFees
             });
+
+            console.log("Fuliza: Fee applied successfully.");
         });
     } catch (error) {
         console.error("Fuliza fee update failed:", error);
