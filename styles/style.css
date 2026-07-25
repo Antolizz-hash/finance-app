@@ -165,8 +165,8 @@ body{
 /* start of expenses page css */
 
 .expense-container{
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(1fr));
   min-height: 100vh;
   gap: 20px;
   align-items: center;
@@ -1048,5 +1048,22 @@ thead th:last-child {
         display: flex;
         width: 100%;
         font-size: 18px;
+    }
+
+    /* Expenses styles for mobile view */
+    .expense-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        /* overflow-x: hidden; */
+        width: 100%;
+    }
+
+    .expense-container .overview{
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .expense-container .main-cards{
+        display: flex;
+        flex-direction: column;
     }
 }
