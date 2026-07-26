@@ -1,398 +1,468 @@
-import {db} from './firebase.js'
+import { db } from './firebase.js';
 import { toTimestamp } from "./helper.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
 import {
-collection,
-getDocs,
-doc,
-addDoc,
-setDoc,
-runTransaction,
-persistentLocalCache,
-persistentMultipleTabManager,
-initializeFirestore,
-getDoc,
-onSnapshot
+    collection,
+    doc,
+    addDoc,
+    setDoc,
+    updateDoc,
+    runTransaction,
+    onSnapshot,
+    getDoc,
+    Timestamp
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-// ******************************** accounts script ************************************
 
-// ******************************* Start of retrieving data from  the db *************************************
+// ===== DOM Elements =====
+const els = {
+    accountsContainer: document.getElementById('accounts-container'),
+    openAddAccountModal: document.getElementById('openAddAccountModalBtn'),
+    closeAddAccountModal: document.getElementById('closeAddAccountModalBtn'),
+    addAccountModal: document.getElementById('addAccountModal'),
+    addAccountForm: document.getElementById('add-account-form'),
+    addAccountBtn: document.getElementById('add-account-btn'),
 
-const cashElement = document.getElementById('cash-balance');
-const mpesaElement = document.getElementById('mpesa-balance');
-const savingsElement = document.getElementById('savings-balance');
+    openAddFundsModal: document.getElementById('openPayModalBtn'),
+    closeAddFundsModal: document.getElementById('closeAddFundsModalBtn'),
+    addFundsModal: document.getElementById('addFundsModal'),
+    addFundsForm: document.getElementById('add-funds-form'),
+    depositBtn: document.getElementById('deposit-btn'),
 
-console.log("Script loaded");
+    openTransferModal: document.getElementById('openTransferModalBtn'),
+    closeTransferModal: document.getElementById('closeTransferModalBtn'),
+    transferModal: document.getElementById('transferModal'),
+    transferForm: document.getElementById('transfer-form'),
+    transferBtn: document.getElementById('transfer-btn'),
+    transferFrom: document.getElementById('transfer-from'),
+    transferTo: document.getElementById('transfer-to'),
+    transferAmount: document.getElementById('transfer-amount'),
+    fromBalance: document.getElementById('from-balance'),
+    toBalance: document.getElementById('to-balance'),
+    transferInfo: document.getElementById('transfer-info'),
+};
 
-// Listen for Cash balance changes
-onSnapshot(doc(db, "Accounts", "cash"), (cashSnap) => {
+// ===== Account Config =====
+const ALL_ACCOUNTS = ['cash', 'mpesa', 'savings'];
 
-    if (!cashSnap.exists()) return;
+const ACCOUNT_ICONS = {
+    cash: '💵',
+    mpesa: '📱',
+    savings: '🏦'
+};
 
-    cashElement.textContent =
-        `Ksh ${Number(cashSnap.data().cashBalance).toFixed(2)}`;
+const ACCOUNT_NAMES = {
+    cash: 'Cash',
+    mpesa: 'M-Pesa',
+    savings: 'Savings'
+};
 
+const BALANCE_FIELDS = {
+    cash: 'cashBalance',
+    mpesa: 'mpesaBalance',
+    savings: 'savingsBalance'
+};
+
+let currentBalances = {};
+
+// ===== Formatters =====
+function fmtMoney(num) {
+    return 'Ksh ' + Number(num).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ===== Modal Handlers =====
+function openModal(modal) { modal?.classList.add('active'); }
+function closeModal(modal) { modal?.classList.remove('active'); }
+
+els.openAddAccountModal?.addEventListener('click', () => openModal(els.addAccountModal));
+els.closeAddAccountModal?.addEventListener('click', () => closeModal(els.addAccountModal));
+els.openAddFundsModal?.addEventListener('click', () => openModal(els.addFundsModal));
+els.closeAddFundsModal?.addEventListener('click', () => closeModal(els.addFundsModal));
+els.openTransferModal?.addEventListener('click', () => {
+    updateTransferBalances();
+    openModal(els.transferModal);
+});
+els.closeTransferModal?.addEventListener('click', () => closeModal(els.transferModal));
+
+[els.addAccountModal, els.addFundsModal, els.transferModal].forEach(modal => {
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal(modal);
+    });
 });
 
-// Listen for Mpesa balance changes
-onSnapshot(doc(db, "Accounts", "mpesa"), (mpesaSnap) => {
-
-    if (!mpesaSnap.exists()) return;
-
-    mpesaElement.textContent =
-        `Ksh ${Number(mpesaSnap.data().mpesaBalance).toFixed(2)}`;
-
+// Set today's date as default
+const todayStr = new Date().toISOString().split('T')[0];
+const dateInputs = document.querySelectorAll('input[type="date"]');
+dateInputs.forEach(input => {
+    if (!input.value) input.value = todayStr;
 });
 
-// Listen for Savings balance changes
-onSnapshot(doc(db, "Accounts", "savings"), (savingsSnap) => {
+// ===== Render Accounts - ALWAYS show all 3 =====
+function renderAccounts(accountData) {
+    els.accountsContainer.innerHTML = ALL_ACCOUNTS.map(type => {
+        const name = ACCOUNT_NAMES[type];
+        const icon = ACCOUNT_ICONS[type];
+        const data = accountData[type] || {};
+        const balance = data.exists ? (Number(data.balance) || 0) : 0;
+        const isNew = !data.exists;
 
-    if (!savingsSnap.exists()) return;
+        return `
+            <div class="account-card ${type} ${isNew ? 'account-new' : ''}">
+                <div class="account-header">
+                    <span class="account-icon">${icon}</span>
+                    <h3>${name}</h3>
+                </div>
+                <p class="account-balance">${fmtMoney(balance)}</p>
+                <p class="account-label">${isNew ? 'Tap "Add Account" to setup' : 'Available Balance'}</p>
+            </div>
+        `;
+    }).join('');
+}
 
-    savingsElement.textContent =
-        `Ksh ${Number(savingsSnap.data().savingsBalance).toFixed(2)}`;
+// ===== Realtime Listener =====
+const accountsRef = collection(db, 'Accounts');
 
+onSnapshot(accountsRef, (snapshot) => {
+    const accountData = {};
+    currentBalances = {};
+
+    ALL_ACCOUNTS.forEach(type => {
+        accountData[type] = { exists: false, balance: 0 };
+        currentBalances[type] = 0;
+    });
+
+    snapshot.forEach(docSnap => {
+        const type = docSnap.id;
+        if (!ALL_ACCOUNTS.includes(type)) return;
+
+        const data = docSnap.data();
+        const balanceField = BALANCE_FIELDS[type] || 'balance';
+        const balance = Number(data[balanceField]) || 0;
+
+        accountData[type] = { exists: true, balance, ...data };
+        currentBalances[type] = balance;
+    });
+
+    renderAccounts(accountData);
+}, (error) => {
+    console.error('Accounts listener failed:', error);
 });
 
-// ****************************** End of retrieving data from database **********************************************
-
-// ******************************* Start of Adding Account to database **********************************************
-
-const addButton = document.getElementById('add-account-btn');
-
-addButton.addEventListener('click', async (e)=>{
+// ===== ADD ACCOUNT =====
+els.addAccountForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const accountType = document.getElementById('account-type').value
-    const initialBalance = document.getElementById('initial-balance').value
-    const createdDate = document.getElementById('accountDate').value
 
-    if(accountType === "cash") {
+    const type = document.getElementById('account-type').value;
+    const date = document.getElementById('accountDate').value;
+    const balance = Number(document.getElementById('initial-balance').value) || 0;
 
-    // define the collection
-    const myCollection = collection(db, "Accounts");
-    // define document data
-    const myData = {
-        accountType: accountType,
-        cashBalance: initialBalance,
-        createdAt: toTimestamp(createdDate)
-    
+    if (!type) {
+        alert('Please select an account type.');
+        return;
     }
-    // add to db
+
+    els.addAccountBtn.disabled = true;
+    els.addAccountBtn.textContent = 'Adding...';
+
     try {
-        const docRef = doc(myCollection, "cash");
-        await setDoc(docRef, myData);
-        
-        alert("Account added successfully");
+        const balanceField = BALANCE_FIELDS[type];
+        const accountRef = doc(db, 'Accounts', type);
 
-        const accountType = document.getElementById('account-type').value = ''
-        const initialBalance = document.getElementById('initial-balance').value = ''
-        const createdDate = document.getElementById('accountDate').value = ''
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
-    }
-    else if(accountType === "mpesa") {
-        // define the collection
-    const myCollection = collection(db, "Accounts");
-    // define document data
-    const myData = {
-        accountType: accountType,
-        mpesaBalance: initialBalance,
-        createdAt: createdDate
-    
-    }
-    // add to db
-    try {
-        const docRef = doc(myCollection, "mpesa");
-        await setDoc(docRef, myData);
-        
-        alert("Account added successfuly");
-        const accountType = document.getElementById('account-type').value = ''
-        const initialBalance = document.getElementById('initial-balance').value = ''
-        const createdDate = document.getElementById('accountDate').value = ''
+        await setDoc(accountRef, {
+            [balanceField]: balance,
+            createdAt: toTimestamp(new Date(date)),
+            updatedAt: Timestamp.now()
+        }, { merge: true });
 
-    } catch (e) {
-        console.error("Error adding document: ", e);
-    }
-    }
-    else if(accountType === "savings") {
-        // define the collection
-    const myCollection = collection(db, "Accounts");
-    // define document data
-    const myData = {
-        accountType: accountType,
-        savingsBalance: initialBalance,
-        createdAt: toTimestamp(createdDate)
-    
-    }
-    
-    try {
-        const docRef = doc(myCollection, "savings");
-        await setDoc(docRef, myData);
-    
-        alert("Account added successfully");
+        // Also update Income tracking for cash/mpesa
+        if (type === 'cash' || type === 'mpesa') {
+            const incomeRef = doc(db, 'Income', type);
+            const incomeSnap = await getDoc(incomeRef);
+            if (!incomeSnap.exists()) {
+                await setDoc(incomeRef, {
+                    [`${type}Balance`]: balance,
+                    addedAt: Timestamp.now()
+                });
+            }
+        }
 
-        const accountType = document.getElementById('account-type').value = ''
-        const initialBalance = document.getElementById('initial-balance').value = ''
-        const createdDate = document.getElementById('accountDate').value = ''
-    } catch (e) {
-        console.error("Error adding document: ", e);
+        closeModal(els.addAccountModal);
+        els.addAccountForm.reset();
+        document.getElementById('accountDate').value = todayStr;
+        alert(`${ACCOUNT_NAMES[type]} account added!`);
+    } catch (error) {
+        console.error('Add account failed:', error);
+        alert('Failed to add account: ' + error.message);
+    } finally {
+        els.addAccountBtn.disabled = false;
+        els.addAccountBtn.textContent = 'Add Account';
     }
-    }
-   
-})
+});
 
-// **************************************** End of adding accounts to database ******************************************
-
-// **************************************** Start of depositing funds to accounts ***************************************
-
-const depositButton = document.getElementById('deposit-btn');
-
-depositButton.addEventListener('click', async (e) =>{
+// ===== ADD FUNDS (FIXED: all reads before all writes) =====
+els.addFundsForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const deposit = getDepositValues();
-    const display = document.querySelector('.display-result');
+    const account = document.getElementById('add-funds-account-type').value;
+    const amount = Number(document.getElementById('deposit-amount').value) || 0;
+    const date = document.getElementById('depositDate').value;
 
+    if (amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+    }
 
-    
-    await runTransaction(db, async (transaction) =>{
-        if(deposit.Account === "cash") {
-            try {
-                // get account reference
-            const cashRef = doc(db, "Accounts", "cash");
-            const cashSnap = await transaction.get(cashRef);
-
-            // cgeck if account exists
-            if(!cashSnap.exists()){
-                throw new Error('Cash account does not exist');
-            }
-            
-            // store data in a variable
-            const cashData = cashSnap.data();
-
-            // read and store balance in cash account
-            const balance = cashData.cashBalance || 0;
-
-            console.log(balance);
-            console.log(typeof balance);
-
-            let newBalance = (
-                parseFloat(balance) + parseFloat(deposit.depositAmount)
-                ).toFixed(2);
-            // update balance in db
-            transaction.update(cashRef,{
-                cashBalance:newBalance
-            })
-
-            // const depositRef = doc(collection(db, "Accounts"));
-            const transactionRef = doc(collection(db, "Transactions"));
-
-            // transaction.set(accountRef, {
-            //     description: "Deposit",
-            //     amount: parseFloat(deposit.depositAmount),
-            //     date: deposit.depositDate
-            // });
-            transaction.set(transactionRef, {
-                transactionType: "deposit",
-                amount: Number(deposit.depositAmount),
-                account: "cash",
-                date: toTimestamp(deposit.date)
-            }); 
-            display.style.color = 'green';
-            display.textContent = "Transaction recorded successfully"
-            // alert("Transaction recorded successfully");
-            // console.log("Transaction recorded successfully");
-            clearDepositValues();
-            // display.textContent = ''
-                
-            } catch (error) {
-                display.style.color = 'red';
-                display.textContent = 'deposit failed: '+ error;
-                
-                console.log('deposit failed: '+error);
-                clearDepositValues(); 
-                display.textContent = ''
-            }
-            
-            
-        }
-        else if (deposit.Account === "mpesa") {
+    els.depositBtn.disabled = true;
+    els.depositBtn.textContent = 'Adding...';
 
     try {
+        const accountRef = doc(db, 'Accounts', account);
+        const balanceField = BALANCE_FIELDS[account];
 
-        // References
-        const mpesaRef = doc(db, "Accounts", "mpesa");
-        const fulizaRef = doc(db, "Loans", "Fuliza");
+        // For cash/mpesa, also need to read Income doc
+        const needsIncomeUpdate = (account === 'cash' || account === 'mpesa');
+        const incomeRef = needsIncomeUpdate ? doc(db, 'Income', account) : null;
 
-        // Read documents
-        const mpesaSnap = await transaction.get(mpesaRef);
-        const fulizaSnap = await transaction.get(fulizaRef);
+        await runTransaction(db, async (transaction) => {
+            // === ALL READS FIRST ===
+            const snap = await transaction.get(accountRef);
+            const currentBalance = snap.exists() ? (Number(snap.data()[balanceField]) || 0) : 0;
+            const newBalance = parseFloat((currentBalance + amount).toFixed(2));
 
-        if (!mpesaSnap.exists()) {
-            throw new Error("Mpesa account does not exist");
-        }
+            let currentIncome = 0;
+            if (needsIncomeUpdate && incomeRef) {
+                const incomeSnap = await transaction.get(incomeRef);
+                currentIncome = incomeSnap.exists() ? (Number(incomeSnap.data()[`${account}Balance`]) || 0) : 0;
+            }
 
-        if (!fulizaSnap.exists()) {
-            throw new Error("Fuliza loan does not exist");
-        }
+            // === ALL WRITES AFTER ===
+            transaction.set(accountRef, {
+                [balanceField]: newBalance,
+                updatedAt: Timestamp.now()
+            }, { merge: true });
 
-        // Current values
-        const mpesaBalance = Number(mpesaSnap.data().mpesaBalance) || 0;
-        const loanBalance = Number(fulizaSnap.data().loanBalance) || 0;
-        const loanLimit = Number(fulizaSnap.data().loanLimit) || 0;
+            if (needsIncomeUpdate && incomeRef) {
+                transaction.set(incomeRef, {
+                    [`${account}Balance`]: parseFloat((currentIncome + amount).toFixed(2)),
+                    addedAt: Timestamp.now()
+                }, { merge: true });
+            }
 
-        const depositAmount = Number(deposit.depositAmount);
-
-        if (depositAmount <= 0) {
-            throw new Error("Invalid deposit amount");
-        }
-
-        let newMpesaBalance;
-        let newLoanBalance;
-        let amountPaid;
-
-        // There is Fuliza debt
-        if (loanBalance > 0) {
-
-            amountPaid = Math.min(depositAmount, loanBalance);
-
-            newLoanBalance = Number((loanBalance - amountPaid).toFixed(2));
-
-            // Only money left after clearing the debt remains in Mpesa
-            newMpesaBalance = Number(
-                (mpesaBalance + depositAmount - amountPaid).toFixed(2)
-            );
-
-        } else {
-
-            amountPaid = 0;
-            newLoanBalance = 0;
-
-            newMpesaBalance = Number(
-                (mpesaBalance + depositAmount).toFixed(2)
-            );
-
-        }
-
-        // Optional: update available limit
-        const newAvailableLimit = Number(
-            (loanLimit - newLoanBalance).toFixed(2)
-        );
-
-        // Update Mpesa
-        transaction.update(mpesaRef, {
-            mpesaBalance: newMpesaBalance
+            // Log transaction
+            const txRef = doc(collection(db, 'Transactions'));
+            transaction.set(txRef, {
+                transactionType: 'income',
+                category: 'deposit',
+                amount: amount,
+                account: account,
+                description: `Deposit to ${ACCOUNT_NAMES[account]}`,
+                date: toTimestamp(new Date(date)),
+                status: 'completed'
+            });
         });
 
-        // Update Fuliza
-        transaction.update(fulizaRef, {
-            loanBalance: newLoanBalance,
-            availableLimit: newAvailableLimit
-        });
+        closeModal(els.addFundsModal);
+        els.addFundsForm.reset();
+        document.getElementById('depositDate').value = todayStr;
+        alert(`Ksh ${amount.toFixed(2)} added to ${ACCOUNT_NAMES[account]}!`);
+    } catch (error) {
+        console.error('Add funds failed:', error);
+        alert('Failed to add funds: ' + error.message);
+    } finally {
+        els.depositBtn.disabled = false;
+        els.depositBtn.textContent = 'Add Funds';
+    }
+});
 
-        // Deposit transaction
-        const depositRef = doc(collection(db, "Transactions"));
+// ===== TRANSFER FUNDS (FIXED: all reads before all writes) =====
 
-        transaction.set(depositRef, {
-            transactionType: "deposit",
-            account: "mpesa",
-            amount: depositAmount,
-            date: deposit.depositDate
-        });
+function updateTransferBalances() {
+    const from = els.transferFrom.value;
+    const to = els.transferTo.value;
 
-        // Loan repayment transaction
-        if (amountPaid > 0) {
+    if (from && currentBalances[from] !== undefined) {
+        els.fromBalance.textContent = `Balance: ${fmtMoney(currentBalances[from])}`;
+    } else {
+        els.fromBalance.textContent = 'Balance: Ksh 0.00';
+    }
 
-            const repaymentRef = doc(collection(db, "Transactions"));
+    if (to && currentBalances[to] !== undefined) {
+        els.toBalance.textContent = `Balance: ${fmtMoney(currentBalances[to])}`;
+    } else {
+        els.toBalance.textContent = 'Balance: Ksh 0.00';
+    }
 
-            transaction.set(repaymentRef, {
-                transactionType: "loan repayment",
-                loan: "Fuliza",
-                account: "mpesa",
-                amount: amountPaid,
-                date: toTimestamp(deposit.depositDate)
+    validateTransfer();
+}
+
+function validateTransfer() {
+    const from = els.transferFrom.value;
+    const to = els.transferTo.value;
+    const amount = Number(els.transferAmount.value) || 0;
+
+    if (from && to && from === to) {
+        els.transferInfo.textContent = 'Cannot transfer to the same account';
+        els.transferInfo.className = 'transfer-info error';
+        els.transferBtn.disabled = true;
+        return false;
+    }
+
+    if (from && amount > 0) {
+        const available = currentBalances[from] || 0;
+        if (amount > available) {
+            els.transferInfo.textContent = `Insufficient funds. Available: ${fmtMoney(available)}`;
+            els.transferInfo.className = 'transfer-info error';
+            els.transferBtn.disabled = true;
+            return false;
+        }
+    }
+
+    if (from && to && amount > 0) {
+        els.transferInfo.textContent = `Transfer ${fmtMoney(amount)} from ${ACCOUNT_NAMES[from]} to ${ACCOUNT_NAMES[to]}`;
+        els.transferInfo.className = 'transfer-info';
+        els.transferBtn.disabled = false;
+        return true;
+    }
+
+    els.transferInfo.textContent = '';
+    els.transferBtn.disabled = true;
+    return false;
+}
+
+els.transferFrom?.addEventListener('change', updateTransferBalances);
+els.transferTo?.addEventListener('change', updateTransferBalances);
+els.transferAmount?.addEventListener('input', validateTransfer);
+
+els.transferForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const from = els.transferFrom.value;
+    const to = els.transferTo.value;
+    const amount = Number(els.transferAmount.value) || 0;
+    const date = document.getElementById('transfer-date').value;
+
+    if (!from || !to) {
+        alert('Please select both From and To accounts.');
+        return;
+    }
+
+    if (from === to) {
+        alert('Cannot transfer to the same account.');
+        return;
+    }
+
+    if (amount <= 0) {
+        alert('Please enter a valid amount.');
+        return;
+    }
+
+    const fromBalance = currentBalances[from] || 0;
+    if (amount > fromBalance) {
+        alert(`Insufficient funds in ${ACCOUNT_NAMES[from]}. Balance: ${fmtMoney(fromBalance)}`);
+        return;
+    }
+
+    els.transferBtn.disabled = true;
+    els.transferBtn.textContent = 'Transferring...';
+
+    try {
+        const fromRef = doc(db, 'Accounts', from);
+        const toRef = doc(db, 'Accounts', to);
+        const fromField = BALANCE_FIELDS[from];
+        const toField = BALANCE_FIELDS[to];
+
+        // Determine if we need income updates
+        const updateFromIncome = (from === 'cash' || from === 'mpesa');
+        const updateToIncome = (to === 'cash' || to === 'mpesa');
+        const incomeFromRef = updateFromIncome ? doc(db, 'Income', from) : null;
+        const incomeToRef = updateToIncome ? doc(db, 'Income', to) : null;
+
+        await runTransaction(db, async (transaction) => {
+            // === ALL READS FIRST ===
+            const fromSnap = await transaction.get(fromRef);
+            const toSnap = await transaction.get(toRef);
+
+            const fromCurrent = fromSnap.exists() ? (Number(fromSnap.data()[fromField]) || 0) : 0;
+            const toCurrent = toSnap.exists() ? (Number(toSnap.data()[toField]) || 0) : 0;
+
+            let incomeFromCurrent = 0;
+            let incomeToCurrent = 0;
+
+            if (updateFromIncome && incomeFromRef) {
+                const incomeFromSnap = await transaction.get(incomeFromRef);
+                incomeFromCurrent = incomeFromSnap.exists() ? (Number(incomeFromSnap.data()[`${from}Balance`]) || 0) : 0;
+            }
+
+            if (updateToIncome && incomeToRef) {
+                const incomeToSnap = await transaction.get(incomeToRef);
+                incomeToCurrent = incomeToSnap.exists() ? (Number(incomeToSnap.data()[`${to}Balance`]) || 0) : 0;
+            }
+
+            // === ALL WRITES AFTER ===
+            const newFromBalance = parseFloat((fromCurrent - amount).toFixed(2));
+            const newToBalance = parseFloat((toCurrent + amount).toFixed(2));
+
+            transaction.set(fromRef, {
+                [fromField]: newFromBalance,
+                updatedAt: Timestamp.now()
+            }, { merge: true });
+
+            transaction.set(toRef, {
+                [toField]: newToBalance,
+                updatedAt: Timestamp.now()
+            }, { merge: true });
+
+            if (updateFromIncome && incomeFromRef) {
+                transaction.set(incomeFromRef, {
+                    [`${from}Balance`]: parseFloat((incomeFromCurrent - amount).toFixed(2))
+                }, { merge: true });
+            }
+
+            if (updateToIncome && incomeToRef) {
+                transaction.set(incomeToRef, {
+                    [`${to}Balance`]: parseFloat((incomeToCurrent + amount).toFixed(2))
+                }, { merge: true });
+            }
+
+            // Log outgoing transaction
+            const outTxRef = doc(collection(db, 'Transactions'));
+            transaction.set(outTxRef, {
+                transactionType: 'expense',
+                category: 'transfer',
+                subcategory: 'transfer_out',
+                amount: amount,
+                account: from,
+                toAccount: to,
+                description: `Transfer to ${ACCOUNT_NAMES[to]}`,
+                date: toTimestamp(new Date(date)),
+                status: 'completed'
             });
 
-        }
+            // Log incoming transaction
+            const inTxRef = doc(collection(db, 'Transactions'));
+            transaction.set(inTxRef, {
+                transactionType: 'income',
+                category: 'transfer',
+                subcategory: 'transfer_in',
+                amount: amount,
+                account: to,
+                fromAccount: from,
+                description: `Transfer from ${ACCOUNT_NAMES[from]}`,
+                date: toTimestamp(new Date(date)),
+                status: 'completed'
+            });
+        });
 
-        alert("Transaction recorded successfully");
-        console.log("Deposit:", depositAmount);
-        console.log("Paid Fuliza:", amountPaid);
-        console.log("Remaining Loan:", newLoanBalance);
-        console.log("Mpesa Balance:", newMpesaBalance);
-
-        clearDepositValues();
-
+        closeModal(els.transferModal);
+        els.transferForm.reset();
+        document.getElementById('transfer-date').value = todayStr;
+        els.transferInfo.textContent = '';
+        alert(`Successfully transferred ${fmtMoney(amount)} from ${ACCOUNT_NAMES[from]} to ${ACCOUNT_NAMES[to]}!`);
     } catch (error) {
-
-        console.error(error);
-        alert(error.message);
-
+        console.error('Transfer failed:', error);
+        alert('Transfer failed: ' + error.message);
+    } finally {
+        els.transferBtn.disabled = false;
+        els.transferBtn.textContent = 'Transfer';
     }
-
-}
-
-        else if(deposit.Account === "savings") {
-
-            try {
-                const savingsRef = doc(db, "Accounts", "savings");
-            
-        
-                const savingSnap = await transaction.get(savingsRef);
-                if(!savingSnap.exists()){
-                    throw new Error('Savings account does not exist');
-                }
-                
-                const savingsData = savingSnap.data();
-                const balance = savingsData.savingsBalance;
-
-                const newBalance = parseFloat((balance + parseFloat(deposit.depositAmount)).toFixed(2));
-
-                transaction.update(savingsRef,{
-                    savingsBalance:newBalance
-                })
-
-                // const depositRef = doc(collection(db, "Accounts"));
-                const transactionRef = doc(collection(db, "Transactions"));
-
-                // transaction.set(depositRef, {
-                //     description: "Deposit",
-                //     amount: parseFloat(deposit.depositAmount),
-                //     date: depositDate
-                // });
-                transaction.set(transactionRef, {
-                    transactionType: "deposit",
-                    amount: parseFloat(deposit.depositAmount),
-                    account: "savings",
-                    date: toTimestamp(deposit.depositDate)
-                }); 
-                alert("Transaction recorded successfully");
-                console.log("Transaction recorded successfully");
-                clearDepositValues();
-            } catch (error) {
-                console.log('deposit failed: '+error);
-                clearDepositValues();
-            }
-    
-    
-        }
-
-    });
-                  
 });
 
-function getDepositValues(){
-    return{
-        Account : document.getElementById('add-funds-account-type').value,
-        depositAmount : document.getElementById('deposit-amount').value,
-        depositDate : document.getElementById('depositDate').value
-    }
-}
-
-function clearDepositValues(){
-    const Account = document.getElementById('add-funds-account-type').value = ''
-    const depositAmount = document.getElementById('deposit-amount').value = ''
-    const depositDate = document.getElementById('depositDate').value = ''
-}
+console.log('accounts.js loaded');

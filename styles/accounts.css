@@ -12,6 +12,7 @@
     --success: #10b981;
     --danger: #ef4444;
     --warning: #f59e0b;
+    --info: #06b6d4;
     --bg: #f1f5f9;
     --card-bg: #ffffff;
     --text: #1e293b;
@@ -32,6 +33,15 @@ body {
     min-height: 100vh;
 }
 
+/* ===== Accounts Section ===== */
+.accounts-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 2.5rem;
+    display: grid;
+    gap: 2.5rem;
+}
+
 /* ===== Navigation ===== */
 nav {
     background: var(--card-bg);
@@ -43,6 +53,9 @@ nav {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    margin: 0 -2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 
 nav::-webkit-scrollbar {
@@ -76,20 +89,21 @@ nav::-webkit-scrollbar {
     background: rgba(37, 99, 235, 0.08);
 }
 
-/* ===== Accounts Section ===== */
-.accounts-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-    display: grid;
-    gap: 2.5rem;
+/* ===== Header ===== */
+.accounts-header {
+    text-align: center;
+    padding-top: 1rem;
 }
 
-.accounts-section > h2 {
+.accounts-header h1 {
     font-size: 2rem;
     font-weight: 700;
     color: var(--text);
-    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.accounts-header p {
+    color: var(--text-light);
 }
 
 /* ===== Accounts Container (CSS Grid) ===== */
@@ -109,6 +123,7 @@ nav::-webkit-scrollbar {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .account-card::before {
@@ -140,8 +155,9 @@ nav::-webkit-scrollbar {
 
 .account-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
@@ -174,39 +190,51 @@ nav::-webkit-scrollbar {
 /* ===== Forms / Buttons Section ===== */
 .forms {
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(3, auto);
     gap: 1rem;
     justify-content: center;
 }
 
 .modal-btn {
-    padding: 0.875rem 2.5rem;
+    padding: 0.875rem 2rem;
     border: none;
     border-radius: var(--radius-sm);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
+    box-shadow: var(--shadow);
 }
 
-#openAddAccountModalBtn {
+.modal-btn.primary {
     background: var(--primary);
     color: white;
 }
 
-#openAddAccountModalBtn:hover {
+.modal-btn.primary:hover {
     background: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
-#openPayModalBtn {
+.modal-btn.success {
     background: var(--success);
     color: white;
 }
 
-#openPayModalBtn:hover {
+.modal-btn.success:hover {
     background: #059669;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-btn.warning {
+    background: var(--warning);
+    color: white;
+}
+
+.modal-btn.warning:hover {
+    background: #d97706;
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
@@ -228,9 +256,8 @@ nav::-webkit-scrollbar {
     display: flex;
 }
 
-/* ===== Modal Forms ===== */
-.add-account-form,
-.add-funds-form {
+/* ===== Modal Card ===== */
+.modal-card {
     background: var(--card-bg);
     border-radius: var(--radius);
     padding: 2.5rem;
@@ -239,6 +266,8 @@ nav::-webkit-scrollbar {
     box-shadow: var(--shadow-lg);
     position: relative;
     animation: slideUp 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 @keyframes slideUp {
@@ -268,15 +297,15 @@ nav::-webkit-scrollbar {
     transform: scale(1.1);
 }
 
-.add-account-form h3,
-.add-funds-form h3 {
+.modal-card h2 {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     color: var(--text);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.75rem;
 }
 
-.add-account-form label,
-.add-funds-form label {
+.modal-card label {
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
@@ -286,10 +315,8 @@ nav::-webkit-scrollbar {
     letter-spacing: 0.05em;
 }
 
-.add-account-form input,
-.add-account-form select,
-.add-funds-form input,
-.add-funds-form select {
+.modal-card input,
+.modal-card select {
     width: 100%;
     padding: 0.875rem;
     border: 2px solid var(--border);
@@ -301,16 +328,13 @@ nav::-webkit-scrollbar {
     transition: var(--transition);
 }
 
-.add-account-form input:focus,
-.add-account-form select:focus,
-.add-funds-form input:focus,
-.add-funds-form select:focus {
+.modal-card input:focus,
+.modal-card select:focus {
     outline: none;
     border-color: var(--primary);
 }
 
-#add-account-btn,
-#deposit-btn {
+.modal-card button[type="submit"] {
     width: 100%;
     padding: 1rem;
     border: none;
@@ -344,6 +368,62 @@ nav::-webkit-scrollbar {
     box-shadow: var(--shadow-lg);
 }
 
+#transfer-btn {
+    background: var(--warning);
+    color: white;
+}
+
+#transfer-btn:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== Transfer Modal Specifics ===== */
+.transfer-accounts {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 0.5rem;
+}
+
+.transfer-from,
+.transfer-to {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.transfer-arrow {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    text-align: center;
+    padding-bottom: 1.25rem;
+    font-weight: 700;
+}
+
+.balance-preview {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.transfer-info {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 1rem;
+    min-height: 1.5rem;
+}
+
+.transfer-info.error {
+    color: var(--danger);
+    font-weight: 600;
+}
+
 /* ===== RESPONSIVE BREAKPOINTS ===== */
 
 /* Tablet: 768px - 1024px */
@@ -365,7 +445,13 @@ nav::-webkit-scrollbar {
 /* Mobile Large: 600px - 768px */
 @media (max-width: 768px) {
     .accounts-section {
-        padding: 2rem 1.5rem;
+        padding: 0 1.5rem 2rem;
+    }
+
+    nav {
+        margin: 0 -1.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
     }
 
     .accounts-container {
@@ -377,22 +463,39 @@ nav::-webkit-scrollbar {
     }
 
     .forms {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
-    .modal-btn {
-        padding: 0.875rem 1.5rem;
+    .modal-card {
+        padding: 2rem;
+    }
+
+    .transfer-accounts {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .transfer-arrow {
+        transform: rotate(90deg);
+        padding: 0;
+        margin: -0.5rem 0;
     }
 }
 
 /* Mobile Small: below 600px */
 @media (max-width: 600px) {
     .accounts-section {
-        padding: 1.5rem 1rem;
+        padding: 0 1rem 1.5rem;
         gap: 2rem;
     }
 
-    .accounts-section > h2 {
+    nav {
+        margin: 0 -1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .accounts-header h1 {
         font-size: 1.75rem;
     }
 
@@ -408,30 +511,24 @@ nav::-webkit-scrollbar {
         font-size: 1.75rem;
     }
 
-    .forms {
-        grid-template-columns: 1fr;
-    }
-
     .modal-btn {
         width: 100%;
         padding: 1rem;
     }
 
-    .add-account-form,
-    .add-funds-form {
+    .modal-card {
         padding: 1.75rem;
         max-width: 100%;
     }
 
-    .add-account-form h3,
-    .add-funds-form h3 {
+    .modal-card h2 {
         font-size: 1.25rem;
     }
 }
 
 /* Very small screens */
 @media (max-width: 380px) {
-    .accounts-section > h2 {
+    .accounts-header h1 {
         font-size: 1.5rem;
     }
 

@@ -5,126 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/accounts.css">
     <script src="../script/accountUi.js" defer></script>
-    <script type="module" src="../script/accounts.js"></script>
+    <script type="module" src="../script/accounts.js" defer></script>
     <title>Accounts</title>
 </head>
 <body>
-
-    <nav>
-        
-        <ul class="nav-links">
-            <li><a href="../index.html">Dashboard</a></li>
-            <li><a href="./loans.html">Loans</a></li>
-            <li><a href="./expenses.html">Expenses</a></li>
-            <li><a href="./income.html">Income</a></li>
-            <li><a href="">Goals</a></li>
-            <li><a href="./reports.html">Reports</a></li>
-        </ul>
-    </nav>
-
     <div class="accounts-section">
-        <h2>Accounts</h2>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Dashboard</a></li>
+                <li><a href="./expenses.html">Expenses</a></li>
+                <li><a href="./income.html">Income</a></li>
+                <li><a href="./loans.html">Loans</a></li>
+                <li><a href="./goals.html">Goals</a></li>
+                <li><a href="./reports.html">Reports</a></li>
+            </ul>
+        </nav>
 
-        <div class="accounts-container">
-
-            <div class="account-card cash">
-                <div class="account-header">
-                    <h3>Cash</h3>
-                    <span class="account-icon">💵</span>
-                </div>
-
-                <p class="account-balance" id="cash-balance">
-                    KES 0.00
-                </p>
-
-                <p class="account-label">Available Balance</p>
-            </div>
-
-            <div class="account-card mpesa">
-                <div class="account-header">
-                    <h3>M-Pesa</h3>
-                    <span class="account-icon">📱</span>
-                </div>
-
-                <p class="account-balance" id="mpesa-balance">
-                    KES 0.00
-                </p>
-
-                <p class="account-label">Available Balance</p>
-            </div>
-
-            <div class="account-card savings">
-                <div class="account-header">
-                    <h3>Savings</h3>
-                    <span class="account-icon">🏦</span>
-                </div>
-
-                <p class="account-balance" id="savings-balance">
-                    KES 0.00
-                </p>
-
-                <p class="account-label">Available Balance</p>
-            </div>
-
+        <div class="accounts-header">
+            <h1>My Accounts</h1>
+            <p>Manage your balances and move money between accounts</p>
         </div>
 
+        <!-- Account Cards -->
+        <div class="accounts-container" id="accounts-container">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- Action Buttons -->
         <div class="forms">
-            <button class="modal-btn" id="openAddAccountModalBtn">Add Account</button>
+            <button class="modal-btn primary" id="openAddAccountModalBtn">+ Add Account</button>
+            <button class="modal-btn success" id="openPayModalBtn">+ Add Funds</button>
+            <button class="modal-btn warning" id="openTransferModalBtn">⇄ Transfer</button>
+        </div>
 
-            <!-- Add Account modal -->
-            <div id="addAccountModal" class="modal-overlay">
-                <div class="add-account-form">
-                    <span class="close-modal-btn" id="closeAddAccountModalBtn">&times;</span>
-                    <form id="add-account-form">
-                        <h3>Add New Account</h3>
-                        <label for="account-type">Account Type</label>
-                        <select id="account-type" name="account-type" required>
-                            <option value="">Select account type</option>
-                            <option value="cash">Cash</option>
-                            <option value="mpesa">M-Pesa</option>
-                            <option value="savings">Savings</option>
-                        </select>
+        <!-- Add Account Modal -->
+        <div id="addAccountModal" class="modal-overlay">
+            <div class="modal-card">
+                <span class="close-modal-btn" id="closeAddAccountModalBtn">&times;</span>
+                <form id="add-account-form">
+                    <h2>Add New Account</h2>
+                    <label for="account-type">Account Type</label>
+                    <select id="account-type" name="account-type" required>
+                        <option value="">Select account type</option>
+                        <option value="cash">Cash</option>
+                        <option value="mpesa">M-Pesa</option>
+                        <option value="savings">Savings</option>
+                    </select>
 
-                        <label for="accountDate">Date</label>
-                        <input type="date" name="accountDate" id="accountDate">
+                    <label for="accountDate">Date</label>
+                    <input type="date" name="accountDate" id="accountDate">
 
-                        <label for="initial-balance">Initial Balance</label>
-                        <input type="number" id="initial-balance" name="initial-balance" min="0" step="0.01" required>
+                    <label for="initial-balance">Initial Balance (Ksh)</label>
+                    <input type="number" id="initial-balance" name="initial-balance" min="0" step="0.01" required>
 
-                        <button id="add-account-btn" type="submit">Add Account</button>
-                    </form>
-                </div>
+                    <button id="add-account-btn" type="submit">Add Account</button>
+                </form>
             </div>
+        </div>
 
-            <button id="openPayModalBtn" class="modal-btn">Add Funds</button>
+        <!-- Add Funds Modal -->
+        <div id="addFundsModal" class="modal-overlay">
+            <div class="modal-card">
+                <span class="close-modal-btn" id="closeAddFundsModalBtn">&times;</span>
+                <form id="add-funds-form">
+                    <h2>Add Funds</h2>
+                    <label for="fund-account">Select Account</label>
+                    <select id="add-funds-account-type" name="fund-account">
+                        <option value="cash">Cash</option>
+                        <option value="mpesa">Mpesa</option>
+                        <option value="savings">Savings</option>
+                    </select>
 
-            <!-- Add Funds modal -->
-            <div id="addFundsModal" class="modal-overlay">
-                <div class="add-funds-form">
-                    <span class="close-modal-btn" id="closeAddFundsModalBtn">&times;</span>
-                    <form action="" class="add-funds-form">
-                        <div class="display-result"></div>
-                        <h3>Add Funds</h3>
-                        <label for="fund-account">Select Account</label>
-                        <select id="add-funds-account-type" name="">
-                            <option value="cash">Cash</option>
-                            <option value="mpesa">Mpesa</option>
-                            <option value="savings">Savings</option>
-                        </select>
-                        <label for="deposit-amount">Amount</label>
-                        <input type="number" id="deposit-amount" name="amount">
-                        <label for="depositDate">Date</label>
-                        <input type="date" name="depositDate" id="depositDate">
-                        <button type="submit" id="deposit-btn" class="add-btn">Add Funds</button>
-                    </form>
-                </div>
+                    <label for="deposit-amount">Amount (Ksh)</label>
+                    <input type="number" id="deposit-amount" name="amount" min="1" step="0.01" required>
+
+                    <label for="depositDate">Date</label>
+                    <input type="date" name="depositDate" id="depositDate">
+
+                    <button type="submit" id="deposit-btn" class="add-btn">Add Funds</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transfer Funds Modal -->
+        <div id="transferModal" class="modal-overlay">
+            <div class="modal-card">
+                <span class="close-modal-btn" id="closeTransferModalBtn">&times;</span>
+                <form id="transfer-form">
+                    <h2>Transfer Funds</h2>
+
+                    <div class="transfer-accounts">
+                        <div class="transfer-from">
+                            <label for="transfer-from">From</label>
+                            <select id="transfer-from" name="transfer-from" required>
+                                <option value="">Select account</option>
+                                <option value="cash">Cash</option>
+                                <option value="mpesa">M-Pesa</option>
+                                <option value="savings">Savings</option>
+                            </select>
+                            <p class="balance-preview" id="from-balance">Balance: Ksh 0.00</p>
+                        </div>
+
+                        <div class="transfer-arrow">⇄</div>
+
+                        <div class="transfer-to">
+                            <label for="transfer-to">To</label>
+                            <select id="transfer-to" name="transfer-to" required>
+                                <option value="">Select account</option>
+                                <option value="cash">Cash</option>
+                                <option value="mpesa">M-Pesa</option>
+                                <option value="savings">Savings</option>
+                            </select>
+                            <p class="balance-preview" id="to-balance">Balance: Ksh 0.00</p>
+                        </div>
+                    </div>
+
+                    <label for="transfer-amount">Amount (Ksh)</label>
+                    <input type="number" id="transfer-amount" name="transfer-amount" min="1" step="0.01" required>
+
+                    <label for="transfer-date">Date</label>
+                    <input type="date" name="transfer-date" id="transfer-date">
+
+                    <p class="transfer-info" id="transfer-info"></p>
+
+                    <button type="submit" id="transfer-btn">Transfer</button>
+                </form>
             </div>
         </div>
     </div>
-
-    
-
-       
-    
 </body>
 </html>

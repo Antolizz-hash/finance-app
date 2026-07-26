@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals</title>
+    <link rel="stylesheet" href="../styles/goals.css">
+    <script type="module" src="../script/goals.js" defer></script>
+</head>
+<body>
+    <div class="goals-container">
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html">Dashboard</a></li>
+                <li><a href="./accounts.html">Accounts</a></li>
+                <li><a href="./expenses.html">Expenses</a></li>
+                <li><a href="./income.html">Income</a></li>
+                <li><a href="./loans.html">Loans</a></li>
+                <li><a href="">Goals</a></li>
+                <li><a href="./reports.html">Reports</a></li>
+            </ul>
+        </nav>
+
+        <div class="goals-header">
+            <h1>My Goals</h1>
+            <p>Track your savings targets and watch your progress grow</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="goals-summary">
+            <div class="summary-card">
+                <span class="summary-icon">🎯</span>
+                <div>
+                    <p class="summary-label">Active Goals</p>
+                    <p class="summary-value" id="active-goals">0</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <span class="summary-icon">💰</span>
+                <div>
+                    <p class="summary-label">Total Saved</p>
+                    <p class="summary-value" id="total-saved">Ksh. 0</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <span class="summary-icon">🏆</span>
+                <div>
+                    <p class="summary-label">Completed</p>
+                    <p class="summary-value" id="completed-goals">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Grid -->
+        <div class="goals-grid" id="goals-grid">
+            <!-- Goals injected here by JS -->
+        </div>
+
+        <!-- Add Goal Button -->
+        <button class="fab" id="openAddGoalModal">+</button>
+
+        <!-- Add Goal Modal -->
+        <div id="addGoalModal" class="modal-overlay">
+            <div class="modal-form">
+                <span class="close-modal-btn" id="closeAddGoalModal">&times;</span>
+                <h2>Create New Goal</h2>
+                <form id="add-goal-form">
+                    <label for="goal-name">Goal Name</label>
+                    <input type="text" id="goal-name" placeholder="e.g. New Laptop" required>
+
+                    <label for="goal-category">Category</label>
+                    <select id="goal-category">
+                        <option value="emergency">Emergency Fund</option>
+                        <option value="vacation">Vacation</option>
+                        <option value="gadget">Gadget</option>
+                        <option value="education">Education</option>
+                        <option value="business">Business</option>
+                        <option value="home">Home</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="goal-target">Target Amount (Ksh)</label>
+                            <input type="number" id="goal-target" min="1" step="0.01" required>
+                        </div>
+                        <div>
+                            <label for="goal-deadline">Deadline</label>
+                            <input type="date" id="goal-deadline">
+                        </div>
+                    </div>
+
+                    <label for="goal-initial">Initial Amount (Ksh)</label>
+                    <input type="number" id="goal-initial" min="0" step="0.01" value="0">
+
+                    <button type="submit" id="addGoalBtn">Create Goal</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Funds Modal -->
+        <div id="addFundsModal" class="modal-overlay">
+            <div class="modal-form">
+                <span class="close-modal-btn" id="closeAddFundsModal">&times;</span>
+                <h2>Add Funds</h2>
+                <p class="modal-subtitle" id="fund-goal-name">Goal Name</p>
+                <form id="add-funds-form">
+                    <input type="hidden" id="fund-goal-id">
+
+                    <label for="fund-amount">Amount (Ksh)</label>
+                    <input type="number" id="fund-amount" min="1" step="0.01" required>
+
+                    <label for="fund-source">Source Account</label>
+                    <select id="fund-source">
+                        <option value="cash">Cash</option>
+                        <option value="mpesa">M-Pesa</option>
+                        <option value="savings">Savings</option>
+                    </select>
+
+                    <button type="submit" id="addFundsBtn">Add Funds</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
