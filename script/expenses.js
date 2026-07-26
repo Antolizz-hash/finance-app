@@ -21,7 +21,7 @@ onSnapshot
 const addExpenseBtn = document.getElementById('submitBtn');
 addExpenseBtn.addEventListener('click', async (e) => {
     e.preventDefault();
-    
+
     const description = document.querySelector('.description').value;
     const amount = document.querySelector('#expense-amount').value;
     const addedDate = document.getElementById('expense-date').value;
@@ -43,7 +43,7 @@ addExpenseBtn.addEventListener('click', async (e) => {
                 const balance = data.limit;
                 const debt = data.LoanAmount;
                 console.log(debt);
-       
+
                 const newLimit = Number((data.limit - Number(amount)).toFixed(2));
                 const newDebt = Number((debt + Number(amount)).toFixed(2)); 
                 console.log(balance);
@@ -78,42 +78,105 @@ addExpenseBtn.addEventListener('click', async (e) => {
 
 
 
-            }else if(account === "mpesa") {
+            } else if(account === "mpesa") {
                 const accountRef = doc(db, "Accounts", "mpesa");
-                // check balance
                 const accountSnap = await transaction.get(accountRef);
 
-                const balance = accountSnap.data().mpesaBalance;
-                console.log(balance);
-                if (balance < Number(amount)) {
-                    throw new Error("Insufficient funds");
+                const mpesaBalance = accountSnap.data().mpesaBalance;
+                const expenseAmount = Number(amount);
+                console.log(mpesaBalance);
+
+                if (mpesaBalance >= expenseAmount) {
+                    // Sufficient Mpesa balance — normal payment
+                    transaction.update(accountRef, {
+                        mpesaBalance: Number((mpesaBalance - expenseAmount).toFixed(2))
+                    });
+
+                    const expenseRef = doc(collection(db, "Expenses"));
+                    const transactionRef = doc(collection(db, "Transactions"));
+
+                    transaction.set(expenseRef, {
+                        description,
+                        amount: expenseAmount,
+                        category,
+                        date,
+                        account: "mpesa"
+                    });
+
+                    transaction.set(transactionRef, {
+                        transactionType: "expense",
+                        amount: expenseAmount,
+                        account: "mpesa",
+                        category,
+                        date
+                    });
+                    console.log("Transaction recorded successfully via Mpesa");
+
+                } else {
+                    // Insufficient Mpesa balance — use Fuliza for the remainder
+                    const mpesaUsed = mpesaBalance;
+                    const fulizaPrincipal = Number((expenseAmount - mpesaUsed).toFixed(2));
+                    const accessFee = Number((fulizaPrincipal * 0.01).toFixed(2));
+                    const totalFulizaCharge = Number((fulizaPrincipal + accessFee).toFixed(2));
+
+                    // Fetch Fuliza data
+                    const fulizaRef = doc(db, "Loans", "Fuliza");
+                    const fulizaSnap = await transaction.get(fulizaRef);
+                    const fulizaData = fulizaSnap.data();
+                    const fulizaLimit = fulizaData.limit;
+                    const fulizaDebt = fulizaData.LoanAmount;
+
+                    if (fulizaLimit < totalFulizaCharge) {
+                        throw new Error("Insufficient funds. Mpesa balance too low and Fuliza limit exceeded.");
+                    }
+
+                    // Drain Mpesa
+                    transaction.update(accountRef, {
+                        mpesaBalance: 0
+                    });
+
+                    // Charge Fuliza (principal + 1% access fee)
+                    const newFulizaLimit = Number((fulizaLimit - totalFulizaCharge).toFixed(2));
+                    const newFulizaDebt = Number((fulizaDebt + totalFulizaCharge).toFixed(2));
+
+                    transaction.update(fulizaRef, {
+                        limit: newFulizaLimit,
+                        LoanAmount: newFulizaDebt
+                    });
+
+                    const expenseRef = doc(collection(db, "Expenses"));
+                    const transactionRef = doc(collection(db, "Transactions"));
+
+                    transaction.set(expenseRef, {
+                        description,
+                        amount: expenseAmount,
+                        category,
+                        date,
+                        account: "mpesa",
+                        mpesaUsed,
+                        fulizaUsed: fulizaPrincipal,
+                        accessFee,
+                        totalFulizaCharge
+                    });
+
+                    transaction.set(transactionRef, {
+                        transactionType: "expense",
+                        amount: expenseAmount,
+                        account: "mpesa",
+                        category,
+                        date,
+                        mpesaUsed,
+                        fulizaUsed: fulizaPrincipal,
+                        accessFee,
+                        totalFulizaCharge,
+                        note: `Paid Ksh ${mpesaUsed.toFixed(2)} from Mpesa and Ksh ${fulizaPrincipal.toFixed(2)} via Fuliza (incl. Ksh ${accessFee.toFixed(2)} access fee)`
+                    });
+                    console.log("Transaction recorded successfully via Mpesa + Fuliza");
                 }
 
-                transaction.update(accountRef, {
-                    mpesaBalance: balance - Number(amount)
-                });
-
-                const expenseRef = doc(collection(db, "Expenses"));
-                const transactionRef = doc(collection(db, "Transactions"));
-
-                transaction.set(expenseRef, {
-                description,
-                amount: Number(amount),
-                category,
-                date
-            });
-
-            transaction.set(transactionRef, {
-            transactionType: "expense",
-            amount: Number(amount),
-            account: "mpesa",
-            category,
-            date
-         });
-            console.log("Transaction recorded successfully");
-            }else{
+            } else {
                 const accountRef = doc(db, "Accounts", "cash");
-                
+
                 // check balance
                 const accountSnap = await transaction.get(accountRef);
 
@@ -293,7 +356,7 @@ searchBtn.addEventListener("click", async () => {
             <h2>Your Transactions</h2>
             <p class="error-text">Failed to retrieve expenses. Please try again.</p>
         `;
-        
+
         // Common Firestore index error
         if (error.message && error.message.includes("index")) {
             alert("This query requires a Firestore index. Check the browser console for the index creation link.");
