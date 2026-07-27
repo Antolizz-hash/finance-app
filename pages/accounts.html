@@ -44,6 +44,7 @@
                 <span class="close-modal-btn" id="closeAddAccountModalBtn">&times;</span>
                 <form id="add-account-form">
                     <h2>Add New Account</h2>
+                    <div id="display"></div>
                     <label for="account-type">Account Type</label>
                     <select id="account-type" name="account-type" required>
                         <option value="">Select account type</option>
@@ -69,6 +70,7 @@
                 <span class="close-modal-btn" id="closeAddFundsModalBtn">&times;</span>
                 <form id="add-funds-form">
                     <h2>Add Funds</h2>
+                    <div class="display"></div>
                     <label for="fund-account">Select Account</label>
                     <select id="add-funds-account-type" name="fund-account">
                         <option value="cash">Cash</option>
@@ -93,7 +95,7 @@
                 <span class="close-modal-btn" id="closeTransferModalBtn">&times;</span>
                 <form id="transfer-form">
                     <h2>Transfer Funds</h2>
-
+                    <div class="display"></div>
                     <div class="transfer-accounts">
                         <div class="transfer-from">
                             <label for="transfer-from">From</label>

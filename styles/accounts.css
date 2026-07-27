@@ -333,6 +333,11 @@ nav::-webkit-scrollbar {
     outline: none;
     border-color: var(--primary);
 }
+#display{
+    color: green;
+    padding: 10px;
+    font-size: 20px;
+}
 
 .modal-card button[type="submit"] {
     width: 100%;

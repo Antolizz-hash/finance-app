@@ -38,6 +38,7 @@ const els = {
     fromBalance: document.getElementById('from-balance'),
     toBalance: document.getElementById('to-balance'),
     transferInfo: document.getElementById('transfer-info'),
+    successMessage: document.getElementById('display'),
 };
 
 // ===== Account Config =====
@@ -155,7 +156,9 @@ els.addAccountForm?.addEventListener('submit', async (e) => {
     const balance = Number(document.getElementById('initial-balance').value) || 0;
 
     if (!type) {
-        alert('Please select an account type.');
+        // alert('Please select an account type.');
+        els.successMessage.style.color = 'red'
+        els.successMessage.textContent = 'Please select an account type.';
         return;
     }
 
@@ -187,10 +190,14 @@ els.addAccountForm?.addEventListener('submit', async (e) => {
         closeModal(els.addAccountModal);
         els.addAccountForm.reset();
         document.getElementById('accountDate').value = todayStr;
-        alert(`${ACCOUNT_NAMES[type]} account added!`);
+        
+        els.successMessage.textContent = `${ACCOUNT_NAMES[type]} account added!`;
+        // alert(`${ACCOUNT_NAMES[type]} account added!`);
     } catch (error) {
         console.error('Add account failed:', error);
-        alert('Failed to add account: ' + error.message);
+        els.successMessage.style.color = 'red'
+        els.successMessage.textContent = 'Failed to add account: ' + error.message;
+        // alert('Failed to add account: ' + error.message);
     } finally {
         els.addAccountBtn.disabled = false;
         els.addAccountBtn.textContent = 'Add Account';
@@ -206,7 +213,9 @@ els.addFundsForm?.addEventListener('submit', async (e) => {
     const date = document.getElementById('depositDate').value;
 
     if (amount <= 0) {
-        alert('Please enter a valid amount.');
+        // alert('Please enter a valid amount.');
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Please enter a valid amount.';
         return;
     }
 
@@ -262,10 +271,13 @@ els.addFundsForm?.addEventListener('submit', async (e) => {
         closeModal(els.addFundsModal);
         els.addFundsForm.reset();
         document.getElementById('depositDate').value = todayStr;
-        alert(`Ksh ${amount.toFixed(2)} added to ${ACCOUNT_NAMES[account]}!`);
+        els.successMessage.textContent = `Ksh ${amount.toFixed(2)} added to ${ACCOUNT_NAMES[account]}!`;
+        // alert(`Ksh ${amount.toFixed(2)} added to ${ACCOUNT_NAMES[account]}!`);
     } catch (error) {
         console.error('Add funds failed:', error);
-        alert('Failed to add funds: ' + error.message);
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Failed to add funds: ' + error.message;
+        // alert('Failed to add funds: ' + error.message);
     } finally {
         els.depositBtn.disabled = false;
         els.depositBtn.textContent = 'Add Funds';
@@ -340,23 +352,32 @@ els.transferForm?.addEventListener('submit', async (e) => {
     const date = document.getElementById('transfer-date').value;
 
     if (!from || !to) {
-        alert('Please select both From and To accounts.');
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Please select both From and To accounts.';
+        // alert('Please select both From and To accounts.');
         return;
     }
 
     if (from === to) {
-        alert('Cannot transfer to the same account.');
+
+        // alert('Cannot transfer to the same account.');
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Cannot transfer to the same account.';
         return;
     }
 
     if (amount <= 0) {
-        alert('Please enter a valid amount.');
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Please enter a valid amount.'
+        // alert('Please enter a valid amount.');
         return;
     }
 
     const fromBalance = currentBalances[from] || 0;
     if (amount > fromBalance) {
-        alert(`Insufficient funds in ${ACCOUNT_NAMES[from]}. Balance: ${fmtMoney(fromBalance)}`);
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = `Insufficient funds in ${ACCOUNT_NAMES[from]}. Balance: ${fmtMoney(fromBalance)}`;
+        // alert(`Insufficient funds in ${ACCOUNT_NAMES[from]}. Balance: ${fmtMoney(fromBalance)}`);
         return;
     }
 
@@ -455,10 +476,13 @@ els.transferForm?.addEventListener('submit', async (e) => {
         els.transferForm.reset();
         document.getElementById('transfer-date').value = todayStr;
         els.transferInfo.textContent = '';
-        alert(`Successfully transferred ${fmtMoney(amount)} from ${ACCOUNT_NAMES[from]} to ${ACCOUNT_NAMES[to]}!`);
+        els.successMessage.textContent = `Successfully transferred ${fmtMoney(amount)} from ${ACCOUNT_NAMES[from]} to ${ACCOUNT_NAMES[to]}!`
+        // alert(`Successfully transferred ${fmtMoney(amount)} from ${ACCOUNT_NAMES[from]} to ${ACCOUNT_NAMES[to]}!`);
     } catch (error) {
         console.error('Transfer failed:', error);
-        alert('Transfer failed: ' + error.message);
+        els.successMessage.style.color = 'red';
+        els.successMessage.textContent = 'Transfer failed: ' + error.message
+        // alert('Transfer failed: ' + error.message);
     } finally {
         els.transferBtn.disabled = false;
         els.transferBtn.textContent = 'Transfer';
