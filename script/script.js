@@ -114,32 +114,6 @@ const monthlyIncomeDisplay = document.querySelector('.monthly-income-amount');
 const incomeDisplay = document.getElementById('income-display');
 const savingsDisplay = document.getElementById('savings-display');
 
-// Listen for Cash account
-onSnapshot(doc(db, "Accounts", "cash"), (cashSnap) => {
-
-    if (!cashSnap.exists()) return;
-
-    updateBalances();
-
-});
-
-// Listen for Mpesa account
-onSnapshot(doc(db, "Accounts", "mpesa"), (mpesaSnap) => {
-
-    if (!mpesaSnap.exists()) return;
-
-    updateBalances();
-
-});
-
-// Listen for Savings account
-onSnapshot(doc(db, "Accounts", "savings"), (savingsSnap) => {
-
-    if (!savingsSnap.exists()) return;
-
-    updateBalances();
-
-});
 
 onSnapshot(collection(db, "Accounts"), (snapshot) => {
 
@@ -207,6 +181,64 @@ onSnapshot(collection(db, "Expenses"), (querySnapshot) => {
 
 }, (error) => {
     console.error("Failed to load expenses:", error);
+});
+
+// --- Goals Listener ---
+const targetAmountEl   = document.querySelector('.target-amount');
+const remainingAmountEl = document.querySelector('.remaining-amount');
+const progressBarEl    = document.querySelector('.progress-bar');
+
+onSnapshot(collection(db, "Goals"), (snapshot) => {
+    let totalTarget   = 0;
+    let totalCurrent  = 0;
+
+    snapshot.forEach((document) => {
+        const data = document.data();
+        const target  = Number(data.targetAmount)  || 0;
+        const current = Number(data.currentAmount) || 0;
+
+        totalTarget  += target;
+        totalCurrent += current;
+    });
+
+    const totalRemaining = Math.max(totalTarget - totalCurrent, 0);
+    const percent        = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
+
+    // Update text
+    if (targetAmountEl) {
+        targetAmountEl.textContent =
+            `ksh. ${totalTarget.toLocaleString("en-KE", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+    }
+
+    if (remainingAmountEl) {
+        remainingAmountEl.textContent =
+            `ksh. ${totalRemaining.toLocaleString("en-KE", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`;
+    }
+
+    // Update progress bar
+    if (progressBarEl) {
+        // If your CSS expects an inner fill div, create it once
+        let fill = progressBarEl.querySelector('.progress-fill');
+        if (!fill) {
+            fill = document.createElement('div');
+            fill.className = 'progress-fill';
+            fill.style.height = '100%';
+            fill.style.background = '#4caf50'; // adjust to your theme
+            fill.style.borderRadius = 'inherit';
+            fill.style.transition = 'width 0.4s ease';
+            progressBarEl.appendChild(fill);
+        }
+        fill.style.width = `${percent}%`;
+    }
+
+}, (error) => {
+    console.error("Failed to load goals:", error);
 });
 
 

@@ -1,5 +1,5 @@
 import { db } from './firebase.js';
-import { toTimestamp } from "./helper.js";
+import { toTimestamp } from "../helper.js";
 import {
     collection,
     doc,
